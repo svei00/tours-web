@@ -1,0 +1,76 @@
+/**
+ * Reseteo base y estilos globales.
+ *
+ * Regla de este archivo: cero colores, tamaños o radios escritos a mano.
+ * Todo llega por var(--...), generadas en src/lib/theme/css-variables.ts
+ * a partir de src/config/brand.ts. Si hace falta un valor que no existe
+ * todavía como variable, se agrega allá — no se improvisa aquí.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  font-family: var(--font-body), sans-serif;
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.font-headline {
+  font-family: var(--font-headline), serif;
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/**
+ * Movimiento con intención, poco — y nunca si el usuario lo pidió así.
+ * Ver HANDOFF §3, principio 5.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
