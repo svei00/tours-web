@@ -14,6 +14,9 @@ build/
 # material de terceros del cliente — no es un activo del proyecto
 reference/
 
+# bitácora personal de Svei — tutorial paso a paso, no es un activo del proyecto
+NOTES.md
+
 # editor / SO
 .DS_Store
 Thumbs.db
@@ -22,3 +25,6 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+.env*
