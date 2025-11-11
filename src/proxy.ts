@@ -16,6 +16,6 @@ export function proxy(request: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-export const proxyConfig = {
+export const config = {
   matcher: '/',
 };
