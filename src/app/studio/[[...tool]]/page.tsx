@@ -13,6 +13,11 @@ import config from '@sanity-studio/sanity.config';
  * de paquetes internos de Sanity que no son compatibles con el grafo de
  * Server Components de Next.js (ver el error de "swr" en NOTES.md, Fase B)
  * — todo el Studio tiene que vivir del lado del cliente.
+ *
+ * NOTA: `npx sanity init` sobrescribe este archivo si se vuelve a correr
+ * dentro de este repo (apunta a un ./sanity.config.ts nuevo con el schema
+ * de blog de ejemplo). Si eso pasa otra vez, este es el contenido correcto
+ * — ver NOTES.md, Fase B, "El incidente de sanity init".
  */
 
 export default function StudioPage() {
