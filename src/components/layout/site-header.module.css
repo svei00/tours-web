@@ -1,0 +1,52 @@
+.header {
+  border-bottom: 1px solid var(--color-sand);
+  background-color: var(--color-white);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-block: var(--space-4);
+}
+
+.logo {
+  font-family: var(--font-headline), serif;
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.nav {
+  display: none;
+  gap: var(--space-6);
+}
+
+.navLink {
+  font-size: var(--font-size-body);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--color-primary-500);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.whatsapp {
+  padding: var(--space-2) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .nav {
+    display: flex;
+  }
+}

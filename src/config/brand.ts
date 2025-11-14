@@ -89,6 +89,12 @@ export const motion = {
 } as const;
 
 /**
+ * Una sola sombra (HANDOFF §7): el contraste arena/blanco ya separa las
+ * tarjetas, así que no hace falta más que una elevación suave.
+ */
+export const shadow = '0 12px 24px -8px rgba(20, 32, 31, 0.18)';
+
+/**
  * Se ejecuta en cuanto se importa este módulo. Si primaryColor o
  * accentColor no alcanzan contraste AA, esto lanza y el build falla
  * aquí mismo — ese es el mecanismo de seguridad de la perilla de

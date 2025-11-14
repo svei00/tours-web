@@ -2,19 +2,29 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 
+import { SiteFooter } from '@/components/layout/site-footer';
+import { SiteHeader } from '@/components/layout/site-header';
+import { StickyWhatsAppBar } from '@/components/layout/sticky-whatsapp-bar';
 import { businessName, buildThemeCss } from '@/lib/theme/css-variables';
 import { bodyFont, headlineFont } from '@/lib/theme/fonts';
+import { getSiteSettings } from '@/lib/sanity/queries';
 import '@/styles/globals.css';
 
 /**
- * i18n real (next-intl, mensajes, cambio de idioma) llega en la Fase C.
- * Por ahora este segmento solo valida que el locale de la URL sea uno
- * de los dos soportados, para que la estructura de rutas de HANDOFF §6
- * (/es, /en) exista desde la Fase A sin construir todavía la lógica de
- * traducción completa.
+ * Este segmento valida que el locale de la URL sea uno de los dos
+ * soportados. El cambio de idioma real (LanguageSwitcher) ya funciona por
+ * intercambio de prefijo de ruta — la negociación completa con next-intl
+ * (segmentos de ruta traducidos, detección de Accept-Language) llega
+ * cuando existan páginas con segmentos que de verdad se traduzcan
+ * (Fase D en adelante, ver HANDOFF §6).
  */
 const SUPPORTED_LOCALES = ['es', 'en'] as const;
 type Locale = (typeof SUPPORTED_LOCALES)[number];
+
+const STICKY_WHATSAPP_MESSAGE: Record<Locale, string> = {
+  es: 'Hola, quiero información sobre los tours',
+  en: 'Hi, I want information about the tours',
+};
 
 export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -42,13 +52,21 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
     notFound();
   }
 
+  const typedLocale = locale as Locale;
+  const siteSettings = await getSiteSettings();
+
   return (
     <html lang={locale} className={`${headlineFont.variable} ${bodyFont.variable}`}>
       <head>
         {/* Contenido 100% calculado desde src/config/brand.ts, no de entrada de usuario. */}
         <style dangerouslySetInnerHTML={{ __html: buildThemeCss() }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <SiteHeader locale={typedLocale} />
+        <main>{children}</main>
+        <SiteFooter locale={typedLocale} />
+        <StickyWhatsAppBar phone={siteSettings?.whatsappPrimary} message={STICKY_WHATSAPP_MESSAGE[typedLocale]} />
+      </body>
     </html>
   );
 }
