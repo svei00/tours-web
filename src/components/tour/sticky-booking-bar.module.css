@@ -1,0 +1,26 @@
+.bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+.price {
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  color: var(--color-primary-500);
+}
