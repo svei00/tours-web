@@ -1,0 +1,45 @@
+.section {
+  padding-block: var(--space-section);
+}
+
+.heading {
+  font-size: var(--font-size-h2);
+  margin-bottom: var(--space-6);
+  padding-inline: var(--space-6);
+}
+
+/*
+ * "Se sale del contenedor por la derecha" (HANDOFF §6): ancho completo de
+ * viewport, la primera tarjeta se alinea con el borde izquierdo del
+ * contenedor ancho (1600px), y la fila sigue de largo -- sin límite a la
+ * derecha -- hasta el borde del navegador, con scroll horizontal.
+ */
+.bleedWrapper {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-left: max(var(--space-6), calc((100vw - 1600px) / 2 + var(--space-6)));
+  padding-right: var(--space-6);
+  padding-bottom: var(--space-2);
+}
+
+.card {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .heading {
+    padding-inline: max(var(--space-6), calc((100vw - 1600px) / 2 + var(--space-6)));
+  }
+
+  .card {
+    flex-basis: 260px;
+  }
+}

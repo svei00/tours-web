@@ -8,7 +8,7 @@
  * refleja lo que hay ahora mismo en brand.ts.
  */
 
-import { brand, motion, palette, radiusScale, sectionPadding, semanticColors, shadow, spacingScale, typeScale } from '@/config/brand';
+import { brand, header, motion, palette, radiusScale, sectionPadding, semanticColors, shadow, spacingScale, typeScale } from '@/config/brand';
 import { COLOR_STEPS } from '@/lib/colors/derive-palette';
 
 function colorScaleDeclarations(scaleName: 'primary' | 'accent'): string[] {
@@ -50,6 +50,12 @@ export function buildThemeCss(): string {
   lines.push(`  --motion-easing: ${motion.easing};`);
 
   lines.push(`  --shadow-card: ${shadow};`);
+
+  lines.push(`  --header-height-loose: ${header.heightLoose};`);
+  lines.push(`  --header-height-pilled: ${header.heightPilled};`);
+  lines.push(`  --header-pill-max-width: ${header.pillMaxWidth};`);
+  lines.push(`  --header-blur: ${header.blur};`);
+  lines.push(`  --header-scrim: rgba(255, 255, 255, ${header.scrimOpacity});`);
 
   lines.push('}');
 

@@ -15,7 +15,12 @@
 import { derivePalette } from '@/lib/colors/derive-palette';
 
 export const brand = {
-  businessName: 'Sandoval Tours',
+  businessName: 'Pura Vida Travel',
+  // Partes del lockup (ver BrandLockup): "Pura Vida" es el nombre a mostrar
+  // grande, "Travel" es el subtítulo tracked-caps bajo la regla — mismo
+  // patrón que el logo aprobado en reference/nautilus/.
+  businessNameShort: 'Pura Vida',
+  tagline: 'Travel',
 
   // Únicas dos entradas de color reales. Todo lo demás en `palette` se deriva de estas.
   primaryColor: '#0C5D63', // Deep Pacific
@@ -93,6 +98,22 @@ export const motion = {
  * tarjetas, así que no hace falta más que una elevación suave.
  */
 export const shadow = '0 12px 24px -8px rgba(20, 32, 31, 0.18)';
+
+/**
+ * Tokens del header (HANDOFF §6 y §7): el estado suelto arranca pegado al
+ * borde superior a ancho completo; al pasar el umbral de scroll se
+ * convierte en un contenedor flotante de pill, más angosto que el
+ * contenedor de 1280px a propósito. `scrimOpacity` es un número (no un
+ * string CSS) porque css-variables.ts lo usa para armar el rgba() del
+ * fondo translúcido sobre el blur.
+ */
+export const header = {
+  heightLoose: '72px',
+  heightPilled: '60px',
+  pillMaxWidth: '1120px',
+  blur: '12px',
+  scrimOpacity: 0.82,
+} as const;
 
 /**
  * Se ejecuta en cuanto se importa este módulo. Si primaryColor o

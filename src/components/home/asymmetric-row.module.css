@@ -1,0 +1,32 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+.single {
+  display: grid;
+}
+
+@media (min-width: 1024px) {
+  .row {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .wide {
+    grid-column: span 7;
+  }
+
+  .narrow {
+    grid-column: span 5;
+  }
+
+  /* HANDOFF §6: la segunda fila invierte el peso -- el ancho pasa a la derecha. */
+  .featureRight .wide {
+    order: 2;
+  }
+
+  .featureRight .narrow {
+    order: 1;
+  }
+}

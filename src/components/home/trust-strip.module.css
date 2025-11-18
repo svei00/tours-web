@@ -1,0 +1,31 @@
+.strip {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-sand);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding-block: var(--space-4);
+  font-size: var(--font-size-small);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.stat {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.link {
+  color: var(--color-primary-500);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

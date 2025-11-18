@@ -1,0 +1,26 @@
+.section {
+  padding-block: var(--space-section);
+  background-color: var(--color-sand);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-h1);
+}
+
+.subtitle {
+  font-size: var(--font-size-bodyLg);
+  color: var(--color-muted);
+  max-width: 46ch;
+}
+
+.cta {
+  margin-top: var(--space-2);
+}

@@ -58,6 +58,12 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'foundedYear',
+      title: 'Año en que empezó a operar',
+      description: 'Para el "años operando" del trust strip del home — se resta contra el año actual.',
+      type: 'number',
+    }),
+    defineField({
       name: 'googleBusinessProfileUrl',
       title: 'Liga al Perfil de Empresa en Google',
       type: 'url',

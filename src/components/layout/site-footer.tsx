@@ -1,4 +1,5 @@
 import { brand } from '@/config/brand';
+import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LocaleLink } from '@/components/ui/locale-link';
 import { getSiteSettings } from '@/lib/sanity/queries';
@@ -33,7 +34,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
       <Container>
         <div className={styles.grid}>
           <div className={styles.column}>
-            <p className={styles.businessName}>{brand.businessName}</p>
+            <BrandLockup tone="white" size="md" className={styles.businessName} />
             {siteSettings?.whatsappPrimary && <p>{siteSettings.whatsappPrimary}</p>}
             {siteSettings?.email && <p>{siteSettings.email}</p>}
           </div>

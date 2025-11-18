@@ -1,10 +1,11 @@
-import { brand } from '@/config/brand';
+import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { LocaleLink } from '@/components/ui/locale-link';
 import { WhatsAppButton } from '@/components/ui/whatsapp-button';
 import { getSiteSettings } from '@/lib/sanity/queries';
 
+import { HeaderShell } from './header-shell';
 import styles from './site-header.module.css';
 
 type Locale = 'es' | 'en';
@@ -39,11 +40,11 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
   const siteSettings = await getSiteSettings();
 
   return (
-    <header className={styles.header}>
+    <HeaderShell>
       <Container>
         <div className={styles.row}>
           <LocaleLink locale={locale} href="/" className={styles.logo}>
-            {brand.businessName}
+            <BrandLockup tone="ink" size="sm" />
           </LocaleLink>
 
           <nav className={styles.nav} aria-label="Principal">
@@ -66,6 +67,6 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
           </div>
         </div>
       </Container>
-    </header>
+    </HeaderShell>
   );
 }

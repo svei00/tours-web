@@ -25,6 +25,12 @@ export const TOUR_LIST_QUERY = groq`*[_type == "tour" && visible == true] | orde
 
 export const TOUR_LIST_BY_TAG_QUERY = groq`*[_type == "tour" && visible == true && $tagSlug in tags[]->slug.current] | order(displayOrder asc) ${TOUR_LIST_PROJECTION}`;
 
+/** Hasta 4 tours para FeaturedTours del home — dos filas de la asimetría 7/5 (HANDOFF §6). */
+export const FEATURED_TOUR_QUERY = groq`*[_type == "tour" && visible == true && featured == true] | order(displayOrder asc) [0...4] ${TOUR_LIST_PROJECTION}`;
+
+/** Para el "nº de tours" del trust strip — cuenta, no trae los documentos. */
+export const TOUR_COUNT_QUERY = groq`count(*[_type == "tour" && visible == true])`;
+
 export const TOUR_DETAIL_QUERY = groq`*[_type == "tour" && visible == true && (slugEs.current == $slug || slugEn.current == $slug)][0]{
   _id,
   title,
@@ -65,6 +71,16 @@ export const TAG_BY_SLUG_QUERY = groq`*[_type == "tag" && slug.current == $slug 
 /** Todos los tours visibles, para /tours. */
 export const getTourList = cache(async (): Promise<TourListItem[]> => {
   return sanityClient.fetch<TourListItem[]>(TOUR_LIST_QUERY);
+});
+
+/** Los destacados del home, para FeaturedTours. */
+export const getFeaturedTours = cache(async (): Promise<TourListItem[]> => {
+  return sanityClient.fetch<TourListItem[]>(FEATURED_TOUR_QUERY);
+});
+
+/** El conteo del trust strip. */
+export const getVisibleTourCount = cache(async (): Promise<number> => {
+  return sanityClient.fetch<number>(TOUR_COUNT_QUERY);
 });
 
 /** Tours visibles con esta categoría, para /tours/categoria/[tag]. */

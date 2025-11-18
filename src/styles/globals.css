@@ -37,6 +37,31 @@ body {
 
 main {
   flex: 1;
+  position: relative;
+  /*
+   * El header vive en position:fixed (site-header.module.css) para poder
+   * volverse transparente sobre el hero (Fase E). Este padding reserva el
+   * espacio que el header suelto ocupa, para que el contenido no arranque
+   * tapado debajo de él. El Hero del home cancela este padding con un
+   * margin-top negativo del mismo valor, a propósito — es la única sección
+   * que debe ir a sangre detrás del header transparente.
+   */
+  padding-top: var(--header-height-loose);
+}
+
+/**
+ * Centinela de 1px al inicio de <main> (HANDOFF §6): el header observa
+ * este elemento con IntersectionObserver para decidir si está en el
+ * estado suelto o en el estado pill. Vive fuera del padding-top de arriba
+ * porque tiene que cruzar el mismo umbral que el header, no el que ve el
+ * visitante.
+ */
+.header-sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 1px;
+  pointer-events: none;
 }
 
 h1,

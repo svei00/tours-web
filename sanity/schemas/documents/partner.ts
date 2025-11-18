@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity';
 
 /**
- * El caso broker (HANDOFF §1): Sandoval Tours no es dueño de las lanchas,
+ * El caso broker (HANDOFF §1): Pura Vida Travel no es dueño de las lanchas,
  * así que las fotos probablemente pertenecen a estos operadores. Los
  * últimos dos campos convierten el tema de derechos de autor en una lista
  * de verificación que vive dentro del CMS, en vez de quedar en la memoria

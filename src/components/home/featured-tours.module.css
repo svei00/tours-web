@@ -1,0 +1,21 @@
+.title {
+  font-size: var(--font-size-h2);
+  margin-bottom: var(--space-8);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.single {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .single {
+    max-width: 420px;
+    margin-inline: auto;
+  }
+}

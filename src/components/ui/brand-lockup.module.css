@@ -1,0 +1,56 @@
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mark {
+  flex-shrink: 0;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.name {
+  font-family: var(--font-headline), serif;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rule {
+  margin-top: 2px;
+  border-top: 1px solid currentColor;
+  opacity: 0.35;
+}
+
+.tagline {
+  margin-top: 3px;
+  font-size: 0.6875rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.ink .name,
+.ink .rule,
+.ink .tagline {
+  color: var(--color-ink);
+}
+
+.white .name,
+.white .rule,
+.white .tagline {
+  color: var(--color-white);
+}
+
+.sm .name {
+  font-size: var(--font-size-h3);
+}
+
+.md .name {
+  font-size: var(--font-size-h2);
+}

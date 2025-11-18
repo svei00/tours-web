@@ -1,0 +1,145 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 82vh, 860px);
+  overflow: hidden;
+  background-color: var(--color-trench);
+  /* Cancela el padding-top que <main> reserva para el header (globals.css)
+     -- el hero es la única sección que va a sangre detrás del header
+     transparente (HANDOFF §6). */
+  margin-top: calc(-1 * var(--header-height-loose));
+}
+
+.slides,
+.fallbackBg {
+  position: absolute;
+  inset: 0;
+}
+
+.fallbackBg {
+  background-color: var(--color-trench);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--motion-slow) var(--motion-easing);
+}
+
+.slideActive {
+  opacity: 1;
+  z-index: 1;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Oscurece arriba (legibilidad del header transparente) y abajo
+     (legibilidad del titular/CTA), deja el centro más claro para que la
+     foto respire -- ver el mismo truco en tour-hero.module.css. */
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 60, 65, 0.55) 0%,
+    rgba(6, 60, 65, 0.12) 28%,
+    rgba(6, 60, 65, 0.18) 55%,
+    rgba(6, 60, 65, 0.8) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    transition: none;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  max-width: 640px;
+  padding: var(--space-16) var(--space-6) var(--space-16);
+  margin-inline: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headline {
+  font-size: var(--font-size-display);
+  color: var(--color-white);
+}
+
+.subheadline {
+  font-size: var(--font-size-bodyLg);
+  color: var(--color-white);
+  opacity: 0.92;
+  max-width: 46ch;
+}
+
+.cta {
+  margin-top: var(--space-2);
+  width: fit-content;
+}
+
+.dots {
+  position: absolute;
+  z-index: 3;
+  bottom: var(--space-6);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--motion-easing);
+}
+
+/* Área de toque real de ~34px sin agrandar el punto visual (accesibilidad). */
+.dot::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
+
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.dotActive {
+  background-color: var(--color-white);
+}
+
+@media (min-width: 768px) {
+  .content {
+    max-width: 720px;
+    padding-inline: var(--space-8);
+  }
+}
+
+@media (min-width: 1280px) {
+  .content {
+    max-width: 1280px;
+    padding-inline: var(--space-16);
+  }
+
+  .headline,
+  .subheadline,
+  .cta {
+    max-width: 640px;
+  }
+}

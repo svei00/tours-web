@@ -3,12 +3,13 @@ import { cache } from 'react';
 import { groq } from 'next-sanity';
 
 import { sanityClient } from './client';
+import type { LocaleString, RichImageValue } from './types';
 
 /**
  * Los campos de siteSettings que necesita el shell del sitio (header,
- * footer, barra de WhatsApp). Cuando Fase D/E necesiten heroSlides,
- * heroHeadline, etc., se amplía esta misma consulta o se agrega una nueva
- * a su lado — no hay que tocar este archivo para leerlo, solo agregar.
+ * footer, barra de WhatsApp) más los del Hero del home (Fase E). Cuando
+ * hagan falta más campos de siteSettings, se amplía esta misma consulta —
+ * no hay que tocar este archivo para leerlo, solo agregar.
  */
 export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   whatsappPrimary,
@@ -18,7 +19,11 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   googleBusinessProfileUrl,
   facebookUrl,
   instagramUrl,
-  tiktokUrl
+  tiktokUrl,
+  heroHeadline,
+  heroSubheadline,
+  heroSlides,
+  foundedYear
 }`;
 
 export type SiteSettings = {
@@ -30,6 +35,10 @@ export type SiteSettings = {
   facebookUrl: string | null;
   instagramUrl: string | null;
   tiktokUrl: string | null;
+  heroHeadline: LocaleString | null;
+  heroSubheadline: LocaleString | null;
+  heroSlides: RichImageValue[] | null;
+  foundedYear: number | null;
 };
 
 /**

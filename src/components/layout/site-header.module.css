@@ -1,23 +1,76 @@
+/**
+ * Estados del header (HANDOFF §6): "suelto" es el default — pegado al
+ * borde superior, ancho completo, sin fondo propio, deja ver el hero
+ * detrás. "Pill" (.pilled, aplicado por HeaderShell vía IntersectionObserver
+ * sobre el centinela de <main>) es el contenedor flotante angosto con
+ * esquinas redondeadas, fondo translúcido + blur y sombra.
+ *
+ * El truco de estructura: .header es el overlay fijo a todo lo ancho del
+ * viewport (para poder centrar), y .bar es quien de verdad carga el
+ * "look" del estado — así max-width + centrado los resuelve flexbox solo,
+ * sin pelear con position:fixed + left/right + margin:auto.
+ */
 .header {
-  border-bottom: 1px solid var(--color-sand);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+}
+
+.bar {
+  width: 100%;
+  height: var(--header-height-loose);
+  margin-top: 0;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  transition:
+    height var(--motion-base) var(--motion-easing),
+    margin-top var(--motion-base) var(--motion-easing),
+    background-color var(--motion-base) var(--motion-easing),
+    box-shadow var(--motion-base) var(--motion-easing),
+    border-radius var(--motion-base) var(--motion-easing),
+    max-width var(--motion-base) var(--motion-easing);
+}
+
+.pilled .bar {
+  max-width: var(--header-pill-max-width);
+  height: var(--header-height-pilled);
+  margin-top: var(--space-3);
   background-color: var(--color-white);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+}
+
+/* El blur solo se paga en escritorio (HANDOFF §9) — en móvil el estado pill usa fondo sólido. */
+@media (min-width: 768px) {
+  .pilled .bar {
+    background-color: var(--header-scrim);
+    backdrop-filter: blur(var(--header-blur));
+    -webkit-backdrop-filter: blur(var(--header-blur));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
 }
 
 .row {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  padding-block: var(--space-4);
 }
 
 .logo {
-  font-family: var(--font-headline), serif;
-  font-size: var(--font-size-h3);
-  font-weight: 600;
+  display: inline-flex;
   text-decoration: none;
-  color: var(--color-ink);
-  white-space: nowrap;
 }
 
 .nav {

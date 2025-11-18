@@ -63,7 +63,10 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
       </head>
       <body>
         <SiteHeader locale={typedLocale} />
-        <main>{children}</main>
+        <main>
+          <div id="header-sentinel" className="header-sentinel" aria-hidden="true" />
+          {children}
+        </main>
         <SiteFooter locale={typedLocale} />
         <StickyWhatsAppBar phone={siteSettings?.whatsappPrimary} message={STICKY_WHATSAPP_MESSAGE[typedLocale]} />
       </body>

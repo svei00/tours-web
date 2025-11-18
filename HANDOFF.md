@@ -1,4 +1,4 @@
-# HANDOFF — Sandoval Tours
+# HANDOFF — Pura Vida Travel
 
 **Sitio de marketing para operador de tours en Puerto Vallarta.**
 
@@ -36,7 +36,7 @@ construir el sitio completo sin preguntar nada más.
 
 ## 1. CONTEXTO DEL NEGOCIO
 
-**Sandoval Tours** — operador/intermediario de tours turísticos en Puerto Vallarta y
+**Pura Vida Travel** — operador/intermediario de tours turísticos en Puerto Vallarta y
 Bahía de Banderas, Jalisco, México.
 
 **Modelo de negocio: es un BROKER.** No es dueño de los barcos ni de las lanchas.
@@ -798,7 +798,7 @@ de sopa de sombras estilo 2015.
 
 ### Metadata
 
-`generateMetadata` por ruta. Plantilla de título: `%s | Sandoval Tours`. Las páginas de
+`generateMetadata` por ruta. Plantilla de título: `%s | Pura Vida Travel`. Las páginas de
 tour toman el título y `shortDescription` (por eso está limitada a 160 caracteres). Las
 imágenes de Open Graph salen del hero del tour vía el CDN de Sanity a 1200×630.
 
@@ -973,7 +973,7 @@ que contactar por WhatsApp inicia una conversación en una plataforma de tercero
 El volante ya promete "aplican términos y restricciones", así que eso necesita existir en
 algún lado. Secciones a cubrir:
 
-- **Que los tours son operados por terceros** y cuál es el rol de Sandoval Tours como
+- **Que los tours son operados por terceros** y cuál es el rol de Pura Vida Travel como
   intermediario. **Para un broker esta es la sección más importante del documento.**
 - Reservas y confirmación (por WhatsApp)
 - Formas de pago y anticipos
@@ -1160,7 +1160,7 @@ medio que puedo usarlas en mi sitio web y en mis redes sociales?
 
 Con que me contestes algo así me sirve:
 
-"Autorizo a Sandoval Tours a usar las fotografías que le compartimos
+"Autorizo a Pura Vida Travel a usar las fotografías que le compartimos
 en su sitio web y redes sociales para promocionar nuestros tours.
 [Nombre] — [Empresa] — [Fecha]"
 
@@ -1221,7 +1221,7 @@ aunque tengas la mejor página del mundo.
 CÓMO SE HACE (30 a 40 minutos, una sola vez):
 
 1. Entra a google.com/business con tu correo de Gmail
-2. Pon el nombre exacto del negocio: Sandoval Tours
+2. Pon el nombre exacto del negocio: Pura Vida Travel
 3. Categoría: Operador turístico o Agencia de viajes
 4. Domicilio y zona de servicio (Puerto Vallarta y alrededores)
 5. Teléfono y WhatsApp — los MISMOS que van a ir en la página
@@ -1238,8 +1238,8 @@ en la página web.
 
 UN DETALLE TÉCNICO QUE IMPORTA MUCHO:
 El nombre, la dirección y el teléfono tienen que quedar EXACTAMENTE
-IGUAL en Google y en la página web. Si en un lado dice "Sandoval Tours"
-y en el otro "Sandoval Tours PV", Google los puede tomar como dos
+IGUAL en Google y en la página web. Si en un lado dice "Pura Vida Travel"
+y en el otro "Pura Vida Travel PV", Google los puede tomar como dos
 negocios distintos y te resta posiciones.
 ```
 

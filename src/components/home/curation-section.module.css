@@ -1,0 +1,23 @@
+.section {
+  background-color: var(--color-trench);
+  color: var(--color-white);
+  padding-block: var(--space-section);
+}
+
+.inner {
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-h1);
+  color: var(--color-white);
+}
+
+.body {
+  margin-top: var(--space-6);
+  font-size: var(--font-size-bodyLg);
+  color: var(--color-white);
+  opacity: 0.88;
+}

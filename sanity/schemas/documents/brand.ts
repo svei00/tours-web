@@ -13,7 +13,7 @@ import { defineField, defineType } from 'sanity';
  * campos, pero AÚN NO alimenta esa validación ni el sitio publicado —
  * hoy son dos mecanismos paralelos. Falta decidir con Svei si: (a) este
  * documento se queda solo como referencia/plantilla para clientes futuros
- * y Sandoval Tours sigue usando el brand.ts de código, o (b) brand.ts pasa
+ * y Pura Vida Travel sigue usando el brand.ts de código, o (b) brand.ts pasa
  * a leer estos valores de Sanity en build time (y entonces la validación
  * de contraste tendría que correr contra estos valores, no contra el
  * archivo). Mientras no se decida, cambiar los colores aquí NO cambia
