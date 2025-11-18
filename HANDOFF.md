@@ -523,6 +523,39 @@ Especificaciones:
 - La primera diapositiva carga con `priority`; el resto en lazy
 - Máximo 5 diapositivas
 
+### Decisión del header: se convierte en pill flotante al hacer scroll
+
+**Aprobado.** El header arranca pegado al borde superior, a ancho completo y sin fondo
+propio — deja ver la foto del hero por detrás. Al pasar el umbral de scroll se despega:
+se vuelve un contenedor flotante con esquinas de pill, fondo translúcido con desenfoque
+y una sombra suave, y se queda fijo el resto del recorrido.
+
+**Por qué este efecto sí se gana su lugar, cuando casi ningún otro lo hace.** No es
+decoración: tapa un hueco real de conversión. Hoy el CTA de WhatsApp del header
+desaparece en cuanto el visitante hace scroll en escritorio — en móvil lo salva la barra
+fija, pero en escritorio no queda nada. El principio 8 de §3 pide el botón de WhatsApp
+"en todos lados, imposible de no ver", y un header que se queda es la forma más barata
+de cumplirlo. Que además se vea bien es lo secundario, no al revés.
+
+Especificaciones:
+
+- El cambio de estado se dispara con un **`IntersectionObserver` sobre un centinela de
+  1px al inicio del `<main>`**, nunca con un listener de `scroll`. Un handler de scroll
+  corre en cada cuadro y es justo el tipo de JS que arruina el presupuesto de INP de §9.
+- Estado suelto: ancho completo, fondo transparente, sin sombra.
+- Estado pill: ancho máximo reducido (ver los tokens de header en §7), radio `pill`,
+  separado del borde superior, fondo blanco translúcido sobre `backdrop-filter`, y la
+  sombra única del sistema.
+- Transición de `base` con el easing del sistema. Bajo `prefers-reduced-motion` el cambio
+  es instantáneo, sin transición — pero **el header sigue quedándose fijo**, porque eso
+  es función, no adorno.
+- **El desenfoque se apaga por debajo de 768px.** `backdrop-filter` es caro en GPU de
+  gama baja y esta audiencia vive en el celular (§3, principio 9). En móvil el estado
+  pill usa fondo sólido, sin blur.
+- El logo y los links **no cambian de tamaño de letra** entre estados. Lo único que se
+  mueve es el contenedor (y su altura, ligeramente). Un header que encoge y reacomoda su
+  contenido mientras alguien lee es la versión sobreactuada de esta idea.
+
 ### Layout del home — la asimetría
 
 **Nunca aparece una fila de tres tarjetas iguales.** El ritmo es:
@@ -624,6 +657,45 @@ escriben a mano): `trench: '#063C41'` para footer, nav y overlays sobre imagen.
   reconocibilidad instantánea a la acción principal de conversión.
 - Coral y ámbar (`#F2A93B`) se ganan su lugar **solo** en precios y promociones.
 
+### Tema oscuro: descartado, y aquí está el porqué
+
+**Decisión cerrada: el sitio es claro, sin alternador de tema.** No es pereza ni falta de
+tiempo — es que un tema oscuro pelea con tres cosas que ya están decididas.
+
+**1. Todo el sistema de color se construyó alrededor del fondo arena.** La razón de
+`#F6F1E9`, tres párrafos más arriba, es que un blanco cálido hace que las fotografías se
+vean mejor porque dejan de competir con un fondo más brillante que ellas. Un fondo oscuro
+invierte ese razonamiento completo: las fotos de playa a mediodía se convierten en
+manchas de luz recortadas contra negro, que es exactamente el efecto contrario.
+
+**2. El producto es sol.** Esto se vende con playa, lancha, cascada y snorkel — el
+registro emocional del negocio es luz de mediodía. Los temas oscuros funcionan muy bien
+donde el contenido se consume de noche o el producto mismo es nocturno: música, video,
+herramientas de programación, relojería, bares. Un tour de día es lo opuesto.
+
+**3. La categoría entera ya convergió, y eso es evidencia.** Ninguna aerolínea, ninguna
+agencia de viajes en línea grande, ninguna plataforma de tours usa tema oscuro por
+default. Cuando una categoría madura completa coincide, normalmente no es descuido
+colectivo: es que el producto se vende con fotografía de lugares luminosos, y una
+interfaz clara se hace a un lado detrás de la foto mejor que una oscura.
+
+**El costo tampoco es menor.** Un tema oscuro de verdad significa una escala de color
+derivada por cada modo, la validación de contraste AA corriendo dos veces, cada
+componente probado en ambos, y `trench` dejando de servir como ancla de contraste porque
+ya todo sería oscuro. Es duplicar la superficie de CSS y abrir una clase entera de bugs,
+en un proyecto cuyo riesgo número uno (§16) es que no lleguen fotos decentes. El esfuerzo
+rinde más en otro lado.
+
+**Lo que sí se hace, y da la misma sensación de profundidad:** usar secciones oscuras de
+forma editorial. El footer ya vive en `trench`; la sección de curaduría y la tira de
+video vertical son buenas candidatas para un bloque a sangre en `trench` con texto
+blanco. Alternar claro y oscuro por sección se lee como dirección de arte; invertir el
+sitio entero se lee como una preferencia de sistema operativo.
+
+**Cuándo reabrir esta decisión:** si el negocio pasa a vender principalmente tours
+nocturnos (cruceros de atardecer, avistamiento de estrellas), o si la analítica muestra
+que una mayoría real navega de noche. Ninguna de las dos es cierta hoy.
+
 ### La función de derivación — el mecanismo de re-tematización
 
 `src/lib/colors/derive-palette.ts` toma el hex primario y genera:
@@ -700,6 +772,19 @@ Toda transición vive detrás de una guarda de `prefers-reduced-motion`.
 
 Contenedor 1280px, variante ancha 1600px, retícula de 12 columnas. La asimetría se
 codifica como presets nombrados.
+
+### Header
+
+Estos también son tokens: viven en `brand.ts` como todo lo demás, no escritos a mano en
+el CSS del componente. Ver §6 para el comportamiento.
+
+```
+heightLoose   72px     estado suelto, pegado al borde
+heightPilled  60px     estado flotante
+pillMaxWidth  1120px   más angosto que el contenedor de 1280px, a propósito
+blur          12px     solo escritorio
+scrim         82%      opacidad del blanco sobre el desenfoque
+```
 
 ### Sombras: una sola
 
@@ -1009,7 +1094,7 @@ Cada fase debe quedar funcionando y verificada antes de pasar a la siguiente.
 | B | Esquema de Sanity + Studio | El cliente puede crear un tour completo en ambos idiomas; una foto de 800px es rechazada |
 | C | Shell de layout | Header, footer, barra fija de WhatsApp, cambio de idioma funcionando en ambos locales |
 | D | Listado y detalle de tours | Las páginas que venden. Galería, WhatsApp con mensaje prellenado, videos con fachada |
-| E | Home | Carrusel, asimetría 7/5, trust strip, tira de video vertical |
+| E | Home | Carrusel, asimetría 7/5, trust strip, tira de video vertical, header que se vuelve pill al hacer scroll |
 | F | Reseñas y promociones | Interruptores de visibilidad; auto-expiración de promos |
 | G | SEO | Metadata, hreflang recíproco, JSON-LD, sitemap, robots |
 | H | Analítica | GA4 + los cinco eventos personalizados |
