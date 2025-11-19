@@ -1,7 +1,31 @@
 .section {
+  position: relative;
+  /* z-index:0 (no solo position:relative) es lo que de verdad abre un
+     stacking context nuevo aquí -- sin esto, el z-index:-1 del watermark
+     se escapa hacia el ancestro con stacking context más cercano (mucho
+     más arriba en el árbol) y termina pintándose detrás de TODA la
+     página, no solo detrás del texto de esta sección. */
+  z-index: 0;
+  overflow: hidden;
   background-color: var(--color-trench);
   color: var(--color-white);
   padding-block: var(--space-section);
+}
+
+/*
+ * Marca de agua decorativa (HANDOFF §3, "premium en el oficio" -- sigue
+ * siendo un rectángulo plano, solo que ya no vacío). z-index:-1 la manda
+ * detrás del contenido normal dentro del stacking context que crea
+ * position:relative de .section, sin tener que tocar el z-index de nada
+ * más.
+ */
+.watermark {
+  position: absolute;
+  z-index: -1;
+  bottom: -15%;
+  right: -8%;
+  opacity: 0.1;
+  pointer-events: none;
 }
 
 .inner {

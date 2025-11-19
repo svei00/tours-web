@@ -1,4 +1,5 @@
 import { Container } from '@/components/ui/container';
+import { NautilusMark } from '@/components/ui/nautilus-mark';
 import type { Locale } from '@/lib/sanity/types';
 
 import styles from './curation-section.module.css';
@@ -31,6 +32,8 @@ export function CurationSection({ locale }: { locale: Locale }) {
 
   return (
     <section className={styles.section}>
+      {/* Marca de agua decorativa: rompe el bloque plano de trench sin depender de que haya fotos cargadas. */}
+      <NautilusMark size={480} className={styles.watermark} />
       <Container>
         <div className={styles.inner}>
           <h2 className={styles.title}>{copy.title}</h2>

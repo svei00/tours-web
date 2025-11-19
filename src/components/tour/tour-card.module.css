@@ -52,7 +52,8 @@
 .price {
   font-weight: 700;
   font-size: var(--font-size-bodyLg);
-  color: var(--color-primary-500);
+  /* Coral, no teal -- HANDOFF §7: el acento se gana su lugar solo en precios y promociones. */
+  color: var(--color-accent-500);
 }
 
 .priceUnit {

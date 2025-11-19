@@ -6,7 +6,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { StickyWhatsAppBar } from '@/components/layout/sticky-whatsapp-bar';
 import { businessName, buildThemeCss } from '@/lib/theme/css-variables';
-import { bodyFont, headlineFont } from '@/lib/theme/fonts';
+import { bodyFont, headlineFont, wordmarkFont } from '@/lib/theme/fonts';
 import { getSiteSettings } from '@/lib/sanity/queries';
 import '@/styles/globals.css';
 
@@ -56,7 +56,7 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
   const siteSettings = await getSiteSettings();
 
   return (
-    <html lang={locale} className={`${headlineFont.variable} ${bodyFont.variable}`}>
+    <html lang={locale} className={`${headlineFont.variable} ${bodyFont.variable} ${wordmarkFont.variable}`}>
       <head>
         {/* Contenido 100% calculado desde src/config/brand.ts, no de entrada de usuario. */}
         <style dangerouslySetInnerHTML={{ __html: buildThemeCss() }} />
