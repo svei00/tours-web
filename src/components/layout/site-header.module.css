@@ -27,13 +27,15 @@
   background-color: transparent;
   box-shadow: none;
   border-radius: 0;
+  /* motion-slow (no motion-base) a propósito -- feedback del cliente: la
+     transición al estado pill se sentía muy abrupta. */
   transition:
-    height var(--motion-base) var(--motion-easing),
-    margin-top var(--motion-base) var(--motion-easing),
-    background-color var(--motion-base) var(--motion-easing),
-    box-shadow var(--motion-base) var(--motion-easing),
-    border-radius var(--motion-base) var(--motion-easing),
-    max-width var(--motion-base) var(--motion-easing);
+    height var(--motion-slow) var(--motion-easing),
+    margin-top var(--motion-slow) var(--motion-easing),
+    background-color var(--motion-slow) var(--motion-easing),
+    box-shadow var(--motion-slow) var(--motion-easing),
+    border-radius var(--motion-slow) var(--motion-easing),
+    max-width var(--motion-slow) var(--motion-easing);
 }
 
 .pilled .bar {
@@ -82,10 +84,18 @@
   font-size: var(--font-size-body);
   color: var(--color-ink);
   text-decoration: none;
+  transition: color var(--motion-fast) var(--motion-easing);
 }
 
 .navLink:hover {
   color: var(--color-primary-500);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink {
+    transition: none;
+  }
 }
 
 .actions {

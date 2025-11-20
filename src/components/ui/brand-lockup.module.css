@@ -15,15 +15,14 @@
 }
 
 /*
- * Pinyon Script (wordmarkFont, ver src/lib/theme/fonts.ts) -- el logo
- * aprobado usa una cursiva, no la serif de titulares del sitio. Sin
- * font-weight: los fonts script solo vienen en 400, y un bold sintético
- * se ve mal en trazo fluido. El tamaño se sube ~20% sobre el h3/h2 base
- * porque los glifos de una script tienen mucho más aire que una serif del
- * mismo font-size nominal -- a tamaño igual se ve chico.
+ * Feedback del cliente: sans, no cursiva (se probó Pinyon Script primero
+ * -- ver NOTES.md, "Corrección post-Fase E" -- el cliente la rechazó).
+ * Usa el mismo font-body (Figtree) que el resto del sitio, en negrita
+ * para que el wordmark tenga presencia propia frente al ícono.
  */
 .name {
-  font-family: var(--font-wordmark), cursive;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -55,9 +54,9 @@
 }
 
 .sm .name {
-  font-size: calc(var(--font-size-h3) * 1.2);
+  font-size: var(--font-size-h3);
 }
 
 .md .name {
-  font-size: calc(var(--font-size-h2) * 1.2);
+  font-size: var(--font-size-h2);
 }

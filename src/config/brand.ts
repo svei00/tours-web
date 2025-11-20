@@ -15,12 +15,13 @@
 import { derivePalette } from '@/lib/colors/derive-palette';
 
 export const brand = {
-  businessName: 'Pura Vida Travel',
+  businessName: 'Pura Vida Vallarta Tours',
   // Partes del lockup (ver BrandLockup): "Pura Vida" es el nombre a mostrar
-  // grande, "Travel" es el subtítulo tracked-caps bajo la regla — mismo
-  // patrón que el logo aprobado en reference/nautilus/.
+  // grande, "Vallarta Tours" es el subtítulo tracked-caps bajo la regla —
+  // feedback del cliente, reemplaza "Travel" (que sí venía del logo
+  // aprobado en reference/nautilus/, pero el cliente pidió el cambio).
   businessNameShort: 'Pura Vida',
-  tagline: 'Travel',
+  tagline: 'Vallarta Tours',
 
   // Únicas dos entradas de color reales. Todo lo demás en `palette` se deriva de estas.
   primaryColor: '#0C5D63', // Deep Pacific

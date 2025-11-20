@@ -13,7 +13,7 @@ import type { StructureResolver } from 'sanity/structure';
  */
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title('Pura Vida Travel')
+    .title('Pura Vida Vallarta Tours')
     .items([
       S.listItem()
         .title('Tours')

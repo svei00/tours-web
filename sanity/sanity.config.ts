@@ -16,7 +16,7 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production';
 
 export default defineConfig({
   name: 'default',
-  title: 'Pura Vida Travel',
+  title: 'Pura Vida Vallarta Tours',
   projectId,
   dataset,
   basePath: '/studio',

@@ -22,11 +22,26 @@
   color: var(--color-white);
   opacity: 0.85;
   text-decoration: none;
+  transition:
+    color var(--motion-fast) var(--motion-easing),
+    opacity var(--motion-fast) var(--motion-easing);
 }
 
+/*
+ * Feedback del cliente: cambio de color + negrita en vez de subrayado.
+ * primary-300 (no accent/coral) a propósito -- el coral está reservado
+ * solo para precios y promociones (HANDOFF §7).
+ */
 .column a:hover {
   opacity: 1;
-  text-decoration: underline;
+  color: var(--color-primary-300);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column a {
+    transition: none;
+  }
 }
 
 .businessName {
