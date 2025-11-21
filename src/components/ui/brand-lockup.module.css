@@ -15,14 +15,15 @@
 }
 
 /*
- * Feedback del cliente: sans, no cursiva (se probó Pinyon Script primero
- * -- ver NOTES.md, "Corrección post-Fase E" -- el cliente la rechazó).
- * Usa el mismo font-body (Figtree) que el resto del sitio, en negrita
- * para que el wordmark tenga presencia propia frente al ícono.
+ * Feedback del cliente: la MISMA fuente que el resto de la página, no una
+ * distinta. Fraunces (font-headline) es la que usan todos los títulos del
+ * sitio (h1/h2/h3 en globals.css) -- mismo font-weight:600 que esas reglas
+ * globales, para que el wordmark se sienta parte del mismo sistema, no un
+ * one-off.
  */
 .name {
-  font-family: var(--font-body), sans-serif;
-  font-weight: 700;
+  font-family: var(--font-headline), serif;
+  font-weight: 600;
   white-space: nowrap;
 }
 
