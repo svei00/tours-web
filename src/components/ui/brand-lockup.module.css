@@ -27,10 +27,28 @@
   white-space: nowrap;
 }
 
+/* Feedback del cliente: la regla se dibuja de izquierda a derecha al cargar la página. */
 .rule {
   margin-top: 2px;
   border-top: 1px solid currentColor;
   opacity: 0.35;
+  transform-origin: left;
+  animation: brand-lockup-draw-rule 0.7s var(--motion-easing) forwards;
+}
+
+@keyframes brand-lockup-draw-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rule {
+    animation: none;
+  }
 }
 
 .tagline {

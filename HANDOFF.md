@@ -525,10 +525,14 @@ Especificaciones:
 
 ### Decisión del header: se convierte en pill flotante al hacer scroll
 
-**Aprobado.** El header arranca pegado al borde superior, a ancho completo y sin fondo
-propio — deja ver la foto del hero por detrás. Al pasar el umbral de scroll se despega:
-se vuelve un contenedor flotante con esquinas de pill, fondo translúcido con desenfoque
-y una sombra suave, y se queda fijo el resto del recorrido.
+**Aprobado, revisado con feedback del cliente.** El header arranca pegado al borde
+superior, a ancho completo — la versión original decía "sin fondo propio", pero el
+cliente pidió algo que lo distinga incluso antes de hacer scroll, así que el estado
+suelto también lleva un tinte translúcido ligero + `backdrop-filter` suave en escritorio
+("glass"), más discreto que el estado pill, sin llegar a taparle la foto al hero. Al
+pasar el umbral de scroll se despega: se vuelve un contenedor flotante con esquinas de
+pill, fondo translúcido más opaco con desenfoque más fuerte, y una sombra suave, y se
+queda fijo el resto del recorrido.
 
 **Por qué este efecto sí se gana su lugar, cuando casi ningún otro lo hace.** No es
 decoración: tapa un hueco real de conversión. Hoy el CTA de WhatsApp del header
@@ -542,16 +546,18 @@ Especificaciones:
 - El cambio de estado se dispara con un **`IntersectionObserver` sobre un centinela de
   1px al inicio del `<main>`**, nunca con un listener de `scroll`. Un handler de scroll
   corre en cada cuadro y es justo el tipo de JS que arruina el presupuesto de INP de §9.
-- Estado suelto: ancho completo, fondo transparente, sin sombra.
+- Estado suelto: ancho completo, tinte translúcido ligero (`looseScrimOpacity`, §7) +
+  `backdrop-filter` suave en escritorio, sin sombra.
 - Estado pill: ancho máximo reducido (ver los tokens de header en §7), radio `pill`,
   separado del borde superior, fondo blanco translúcido sobre `backdrop-filter`, y la
   sombra única del sistema.
-- Transición de `base` con el easing del sistema. Bajo `prefers-reduced-motion` el cambio
-  es instantáneo, sin transición — pero **el header sigue quedándose fijo**, porque eso
-  es función, no adorno.
-- **El desenfoque se apaga por debajo de 768px.** `backdrop-filter` es caro en GPU de
-  gama baja y esta audiencia vive en el celular (§3, principio 9). En móvil el estado
-  pill usa fondo sólido, sin blur.
+- Transición de `slow` (no `base` — se sentía abrupta) con el easing del sistema. Bajo
+  `prefers-reduced-motion` el cambio es instantáneo, sin transición — pero **el header
+  sigue quedándose fijo**, porque eso es función, no adorno.
+- **El desenfoque se apaga por debajo de 768px, en los dos estados.** `backdrop-filter`
+  es caro en GPU de gama baja y esta audiencia vive en el celular (§3, principio 9). En
+  móvil el estado suelto se queda con el tinte plano sin blur, y el estado pill usa
+  fondo sólido, sin blur.
 - El logo y los links **no cambian de tamaño de letra** entre estados. Lo único que se
   mueve es el contenedor (y su altura, ligeramente). Un header que encoge y reacomoda su
   contenido mientras alguien lee es la versión sobreactuada de esta idea.
@@ -779,11 +785,13 @@ Estos también son tokens: viven en `brand.ts` como todo lo demás, no escritos 
 el CSS del componente. Ver §6 para el comportamiento.
 
 ```
-heightLoose   72px     estado suelto, pegado al borde
-heightPilled  60px     estado flotante
-pillMaxWidth  1120px   más angosto que el contenedor de 1280px, a propósito
-blur          12px     solo escritorio
-scrim         82%      opacidad del blanco sobre el desenfoque
+heightLoose      72px     estado suelto, pegado al borde
+heightPilled     60px     estado flotante
+pillMaxWidth     1120px   más angosto que el contenedor de 1280px, a propósito
+blur             12px     estado pill, solo escritorio
+scrim            82%      opacidad del blanco sobre el desenfoque, estado pill
+looseBlur        6px      estado suelto, solo escritorio -- más discreto que el de pill
+looseScrimOpacity 16%     opacidad del blanco en el estado suelto -- feedback del cliente
 ```
 
 ### Sombras: una sola

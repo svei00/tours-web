@@ -1,0 +1,104 @@
+/* Variante `icon` -- la lupa del header de escritorio, se expande en su lugar. */
+.iconForm {
+  display: none;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .iconForm {
+    display: flex;
+  }
+}
+
+.iconInput {
+  width: 0;
+  opacity: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  font-size: var(--font-size-small);
+  color: var(--color-ink);
+  transition:
+    width var(--motion-base) var(--motion-easing),
+    opacity var(--motion-fast) var(--motion-easing),
+    padding var(--motion-base) var(--motion-easing);
+}
+
+.iconForm.open .iconInput {
+  width: 160px;
+  opacity: 1;
+  padding: var(--space-2);
+  border-bottom-color: var(--color-muted);
+}
+
+.iconTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  /* "dale vida" -- feedback del cliente: un pequeño pop al hover, no solo un ícono estático. */
+  transition:
+    background-color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+
+.iconTrigger:hover {
+  background-color: var(--color-sand);
+  transform: scale(1.12);
+}
+
+/* Variante `inline` -- siempre abierta, arriba del drawer móvil. */
+.inlineForm {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-sand);
+}
+
+.inlineInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background-color: var(--color-sand);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-size: var(--font-size-body);
+  color: var(--color-ink);
+}
+
+.inlineTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: none;
+  background-color: var(--color-primary-500);
+  color: var(--color-primary-foreground);
+  border-radius: var(--radius-md);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconInput,
+  .iconTrigger {
+    transition: none;
+  }
+
+  .iconTrigger:hover {
+    transform: none;
+  }
+}

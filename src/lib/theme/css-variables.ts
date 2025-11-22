@@ -56,6 +56,8 @@ export function buildThemeCss(): string {
   lines.push(`  --header-pill-max-width: ${header.pillMaxWidth};`);
   lines.push(`  --header-blur: ${header.blur};`);
   lines.push(`  --header-scrim: rgba(255, 255, 255, ${header.scrimOpacity});`);
+  lines.push(`  --header-loose-blur: ${header.looseBlur};`);
+  lines.push(`  --header-loose-scrim: rgba(255, 255, 255, ${header.looseScrimOpacity});`);
 
   lines.push('}');
 

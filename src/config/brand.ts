@@ -114,6 +114,11 @@ export const header = {
   pillMaxWidth: '1120px',
   blur: '12px',
   scrimOpacity: 0.82,
+  // Estado suelto (feedback del cliente): tinte más ligero y blur más
+  // suave que el pill, solo para que el header ya se distinga desde
+  // arriba, sin llegar a taparle la foto al hero.
+  looseBlur: '6px',
+  looseScrimOpacity: 0.16,
 } as const;
 
 /**

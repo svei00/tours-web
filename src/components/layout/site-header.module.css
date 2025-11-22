@@ -1,9 +1,13 @@
 /**
- * Estados del header (HANDOFF §6): "suelto" es el default — pegado al
- * borde superior, ancho completo, sin fondo propio, deja ver el hero
- * detrás. "Pill" (.pilled, aplicado por HeaderShell vía IntersectionObserver
- * sobre el centinela de <main>) es el contenedor flotante angosto con
- * esquinas redondeadas, fondo translúcido + blur y sombra.
+ * Estados del header (HANDOFF §6, revisado con feedback del cliente):
+ * "suelto" es el default — pegado al borde superior, ancho completo. Ya
+ * NO va sin fondo del todo (la versión aprobada original) — el cliente
+ * pidió algo que lo distinga incluso sin haber hecho scroll, así que
+ * lleva un tinte translúcido ligero + blur suave en escritorio ("glass"),
+ * más discreto que el estado pill. "Pill" (.pilled, aplicado por
+ * HeaderShell vía IntersectionObserver sobre el centinela de <main>) es
+ * el contenedor flotante angosto con esquinas redondeadas, fondo
+ * translúcido más opaco + blur más fuerte, y sombra.
  *
  * El truco de estructura: .header es el overlay fijo a todo lo ancho del
  * viewport (para poder centrar), y .bar es quien de verdad carga el
@@ -24,7 +28,7 @@
   width: 100%;
   height: var(--header-height-loose);
   margin-top: 0;
-  background-color: transparent;
+  background-color: var(--header-loose-scrim);
   box-shadow: none;
   border-radius: 0;
   /* motion-slow (no motion-base) a propósito -- feedback del cliente: la
@@ -38,6 +42,14 @@
     max-width var(--motion-slow) var(--motion-easing);
 }
 
+/* El blur solo se paga en escritorio (HANDOFF §9) -- en móvil el estado suelto se queda con el tinte plano, sin blur. */
+@media (min-width: 768px) {
+  .bar {
+    backdrop-filter: blur(var(--header-loose-blur));
+    -webkit-backdrop-filter: blur(var(--header-loose-blur));
+  }
+}
+
 .pilled .bar {
   max-width: var(--header-pill-max-width);
   height: var(--header-height-pilled);
@@ -47,7 +59,7 @@
   box-shadow: var(--shadow-card);
 }
 
-/* El blur solo se paga en escritorio (HANDOFF §9) — en móvil el estado pill usa fondo sólido. */
+/* En móvil el estado pill usa fondo sólido, no el tinte translúcido. */
 @media (min-width: 768px) {
   .pilled .bar {
     background-color: var(--header-scrim);
@@ -75,29 +87,6 @@
   text-decoration: none;
 }
 
-.nav {
-  display: none;
-  gap: var(--space-6);
-}
-
-.navLink {
-  font-size: var(--font-size-body);
-  color: var(--color-ink);
-  text-decoration: none;
-  transition: color var(--motion-fast) var(--motion-easing);
-}
-
-.navLink:hover {
-  color: var(--color-primary-500);
-  font-weight: 600;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .navLink {
-    transition: none;
-  }
-}
-
 .actions {
   display: flex;
   align-items: center;
@@ -106,10 +95,4 @@
 
 .whatsapp {
   padding: var(--space-2) var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .nav {
-    display: flex;
-  }
 }
