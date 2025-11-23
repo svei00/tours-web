@@ -22,14 +22,53 @@
   z-index: 50;
   display: flex;
   justify-content: center;
+
+  /*
+   * El texto del header cambia de color según qué haya detrás: sobre el
+   * Hero del home (fondo trench oscuro con degradado) el texto tiene que
+   * ser claro; sobre cualquier otra página (fondo arena) se queda oscuro.
+   * `.onHero` (aplicado por HeaderShell solo en home + sin scroll) es lo
+   * único que redefine estas tres variables -- todo lo demás (nav,
+   * wordmark, íconos) las hereda en vez de tener su propio color fijo.
+   * Feedback del cliente: teal (primary-600, #0B5358) sobre el glass del
+   * hero -- que también es teal, por el degradado de trench -- casi no se
+   * distinguía.
+   */
+  --header-fg: var(--color-ink);
+  --header-fg-hover: var(--color-primary-500);
+  --header-fg-active: var(--color-primary-600);
+}
+
+.onHero {
+  --header-fg: var(--color-sand);
+  --header-fg-hover: var(--color-sand);
+  --header-fg-active: var(--color-sand);
 }
 
 .bar {
   width: 100%;
   height: var(--header-height-loose);
   margin-top: 0;
+  /*
+   * display:flex + align-items:center -- sin esto Container (adentro)
+   * queda con altura automática pegada arriba, no centrada, y ningún
+   * descendiente puede heredar la altura real del header vía
+   * align-self:stretch (ver .container en este mismo archivo y
+   * search-form.module.css, .iconForm -- el bug del dropdown encimado
+   * bajaba de aquí).
+   */
+  display: flex;
+  align-items: center;
   background-color: var(--header-loose-scrim);
-  box-shadow: none;
+  /*
+   * Línea muy suave siempre presente (HANDOFF §9: costo casi nulo, no es
+   * backdrop-filter) -- feedback del cliente: sobre un fondo plano arena
+   * (ej. /tours) el tinte + blur del glass no se notaba, no había nada
+   * que lo distinguiera de la página. La sombra da un borde consistente
+   * sin importar qué haya detrás; sobre una foto es casi imperceptible,
+   * que es exactamente lo que se quiere ahí.
+   */
+  box-shadow: 0 1px 0 rgba(20, 32, 31, 0.08);
   border-radius: 0;
   /* motion-slow (no motion-base) a propósito -- feedback del cliente: la
      transición al estado pill se sentía muy abrupta. */
@@ -74,6 +113,11 @@
   }
 }
 
+/* Estira el Container (hijo directo de .bar, ver site-header.tsx) a la altura completa de la fila -- cierra la cadena que necesita .row/.actions/.iconForm para heredar el alto real del header. */
+.container {
+  align-self: stretch;
+}
+
 .row {
   height: 100%;
   display: flex;
@@ -91,6 +135,10 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
+  /* Estira .actions a la altura completa de .row (72px/60px) -- SearchForm
+     lo necesita para anclar su dropdown justo debajo de todo el header,
+     no a la mitad (ver search-form.module.css, .iconForm). */
+  align-self: stretch;
 }
 
 .whatsapp {

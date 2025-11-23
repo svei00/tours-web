@@ -1,35 +1,26 @@
-/* Variante `icon` -- la lupa del header de escritorio, se expande en su lugar. */
+/* Variante `icon` -- la lupa del header de escritorio. El trigger vive en la fila normal (tamaño fijo, nunca cambia el layout); el dropdown flota en position:absolute, así nunca le pelea espacio a los demás elementos del header. */
 .iconForm {
   display: none;
+  position: relative;
   align-items: center;
+  /*
+   * Sin esto, .iconForm mide solo lo que mide el botón (36px) centrado
+   * dentro de .actions -- el dropdown, anclado a "100% de .iconForm",
+   * empieza a la mitad del header en vez de justo debajo, y encima se
+   * traslapa con el nav (el bug real que reportó el cliente). align-self
+   * stretch (junto con el mismo ajuste en .actions, site-header.module.css)
+   * hace que .iconForm mida la altura completa de la fila, así "100%" sí
+   * es "debajo de todo el header". height:100% por sí solo no alcanza
+   * porque .actions es de altura automática, no fija -- un porcentaje no
+   * se resuelve contra un ancestro de altura automática.
+   */
+  align-self: stretch;
 }
 
 @media (min-width: 768px) {
   .iconForm {
     display: flex;
   }
-}
-
-.iconInput {
-  width: 0;
-  opacity: 0;
-  padding: 0;
-  border: none;
-  border-bottom: 1px solid transparent;
-  background: transparent;
-  font-size: var(--font-size-small);
-  color: var(--color-ink);
-  transition:
-    width var(--motion-base) var(--motion-easing),
-    opacity var(--motion-fast) var(--motion-easing),
-    padding var(--motion-base) var(--motion-easing);
-}
-
-.iconForm.open .iconInput {
-  width: 160px;
-  opacity: 1;
-  padding: var(--space-2);
-  border-bottom-color: var(--color-muted);
 }
 
 .iconTrigger {
@@ -42,6 +33,7 @@
   border: none;
   background: transparent;
   font-size: 1.1rem;
+  color: var(--header-fg, var(--color-ink));
   cursor: pointer;
   padding: 0;
   border-radius: var(--radius-pill);
@@ -54,6 +46,59 @@
 .iconTrigger:hover {
   background-color: var(--color-sand);
   transform: scale(1.12);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: max-content;
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing),
+    visibility var(--motion-fast);
+}
+
+.dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdownInput {
+  width: 200px;
+  border: none;
+  background-color: var(--color-sand);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-small);
+  color: var(--color-ink);
+}
+
+.dropdownSubmit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  background-color: var(--color-primary-500);
+  color: var(--color-primary-foreground);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 /* Variante `inline` -- siempre abierta, arriba del drawer móvil. */
@@ -93,8 +138,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .iconInput,
-  .iconTrigger {
+  .iconTrigger,
+  .dropdown {
     transition: none;
   }
 

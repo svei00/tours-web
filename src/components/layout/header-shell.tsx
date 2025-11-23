@@ -1,8 +1,11 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import styles from './site-header.module.css';
+
+const HOME_PATH_PATTERN = /^\/(es|en)\/?$/;
 
 /**
  * Envuelve el contenido del header (que se renderiza en el servidor, ver
@@ -15,9 +18,18 @@ import styles from './site-header.module.css';
  * inicio de <main> (ver globals.css y app/[locale]/layout.tsx) — nunca un
  * listener de scroll, que corre en cada cuadro y es justo el tipo de JS
  * que arruina el presupuesto de INP (HANDOFF §9).
+ *
+ * `.onHero`: solo el home tiene un Hero a sangre detrás del header
+ * transparente (HeroCarousel cancela el padding-top con margin negativo,
+ * ver hero-carousel.module.css) — en cualquier otra página, en estado
+ * suelto, el header se sienta sobre el fondo arena normal de la página.
+ * Esa diferencia importa para el color del texto (ver site-header.module.css
+ * y NOTES.md): texto teal sobre el glass del hero (también teal, por el
+ * degradado de trench) se leía mal — feedback del cliente.
  */
 export function HeaderShell({ children }: { children: ReactNode }) {
   const [pilled, setPilled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const sentinel = document.getElementById('header-sentinel');
@@ -28,8 +40,13 @@ export function HeaderShell({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  const isHome = HOME_PATH_PATTERN.test(pathname);
+  const onHero = isHome && !pilled;
+
+  const classNames = [styles.header, pilled && styles.pilled, onHero && styles.onHero].filter(Boolean).join(' ');
+
   return (
-    <header className={pilled ? `${styles.header} ${styles.pilled}` : styles.header}>
+    <header className={classNames}>
       <div className={styles.bar}>{children}</div>
     </header>
   );

@@ -7,7 +7,8 @@
   border: none;
   background: transparent;
   font-size: 1.5rem;
-  color: var(--color-ink);
+  /* var(--header-fg, ...) -- mismo trato que el resto del header (site-header.module.css): claro sobre el Hero del home, oscuro en cualquier otra página. */
+  color: var(--header-fg, var(--color-ink));
   cursor: pointer;
   padding: 0;
 }
@@ -40,6 +41,16 @@
   flex-direction: column;
   padding: var(--space-6);
   overflow-y: auto;
+  /*
+   * El drawer es un panel blanco a pantalla completa, siempre -- sin
+   * importar en qué estado estaba el header cuando se abrió. Sin este
+   * reset, NavLinks/MobileNav heredarían --header-fg del .header (que
+   * puede estar en modo "onHero", texto arena) y el texto se volvería
+   * ilegible sobre este fondo blanco.
+   */
+  --header-fg: var(--color-ink);
+  --header-fg-hover: var(--color-primary-500);
+  --header-fg-active: var(--color-primary-600);
 }
 
 .closeButton {

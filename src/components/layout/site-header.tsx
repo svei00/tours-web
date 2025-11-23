@@ -18,23 +18,24 @@ type Locale = 'es' | 'en';
  * en las Fases F e I, y /nosotros no tiene fase dueña todavía -- ver
  * NOTES.md) — el nav ya las enlaza porque construir el header dos veces
  * no vale la pena; van a dar 404 hasta entonces, y eso es esperado, no un
- * bug. "Inicio"/"Home" se agrega con ícono a pedido del cliente, para que
- * quede claro en qué página está uno (ver NavLinks para el estado activo).
+ * bug. Cada item lleva ícono (feedback del cliente: el de "Inicio" con
+ * ⌂ no convencía, y pidió que el resto también tuviera uno) — se quedan
+ * como emoji, mismo criterio que ☰/✕/🔍 en vez de una librería de SVG.
  */
 const NAV_ITEMS: Record<Locale, NavItem[]> = {
   es: [
-    { href: '/', label: 'Inicio', icon: '⌂' },
-    { href: '/tours', label: 'Tours' },
-    { href: '/nosotros', label: 'Nosotros' },
-    { href: '/resenas', label: 'Reseñas' },
-    { href: '/contacto', label: 'Contacto' },
+    { href: '/', label: 'Inicio', icon: '🏠' },
+    { href: '/tours', label: 'Tours', icon: '🧭' },
+    { href: '/nosotros', label: 'Nosotros', icon: 'ℹ️' },
+    { href: '/resenas', label: 'Reseñas', icon: '⭐' },
+    { href: '/contacto', label: 'Contacto', icon: '💬' },
   ],
   en: [
-    { href: '/', label: 'Home', icon: '⌂' },
-    { href: '/tours', label: 'Tours' },
-    { href: '/about', label: 'About' },
-    { href: '/reviews', label: 'Reviews' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: 'Home', icon: '🏠' },
+    { href: '/tours', label: 'Tours', icon: '🧭' },
+    { href: '/about', label: 'About', icon: 'ℹ️' },
+    { href: '/reviews', label: 'Reviews', icon: '⭐' },
+    { href: '/contact', label: 'Contact', icon: '💬' },
   ],
 };
 
@@ -48,7 +49,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 
   return (
     <HeaderShell>
-      <Container>
+      <Container className={styles.container}>
         <div className={styles.row}>
           <LocaleLink locale={locale} href="/" className={styles.logo}>
             <BrandLockup tone="ink" size="sm" />

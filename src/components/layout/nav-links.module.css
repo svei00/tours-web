@@ -19,7 +19,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--color-ink);
+  /* var(--header-fg, ...) hereda del .header (site-header.module.css) cuando existe -- el fallback es lo que ya usaba el drawer, que no vive dentro del header. */
+  color: var(--header-fg, var(--color-ink));
   text-decoration: none;
   transition: color var(--motion-fast) var(--motion-easing);
 }
@@ -35,13 +36,13 @@
 }
 
 .link:hover {
-  color: var(--color-primary-500);
+  color: var(--header-fg-hover, var(--color-primary-500));
   font-weight: 600;
 }
 
 /* Página activa: mismo tratamiento en la barra y en el drawer -- color + negrita, permanente, no solo en hover. */
 .active {
-  color: var(--color-primary-600);
+  color: var(--header-fg-active, var(--color-primary-600));
   font-weight: 700;
 }
 

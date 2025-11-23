@@ -60,10 +60,11 @@
   white-space: nowrap;
 }
 
+/* var(--header-fg, ...) hereda del .header cuando el lockup vive ahí adentro (ver site-header.module.css); en el footer o donde sea que no exista esa variable, cae al ink normal. */
 .ink .name,
 .ink .rule,
 .ink .tagline {
-  color: var(--color-ink);
+  color: var(--header-fg, var(--color-ink));
 }
 
 .white .name,
