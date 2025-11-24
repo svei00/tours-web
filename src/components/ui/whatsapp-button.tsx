@@ -5,8 +5,11 @@ import { Button } from './button';
 /**
  * wa.me solo acepta dígitos (con código de país, sin "+" ni espacios ni
  * guiones) — por eso se limpia el número aquí antes de armar la liga.
+ * Exportada porque SiteFooter también la necesita para el teléfono en
+ * texto plano (ver site-footer.tsx) — mismo criterio, un solo lugar que
+ * arma la liga de wa.me en todo el sitio.
  */
-function buildWhatsAppUrl(phone: string, message: string): string {
+export function buildWhatsAppUrl(phone: string, message: string): string {
   const digitsOnly = phone.replace(/\D/g, '');
   return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
 }

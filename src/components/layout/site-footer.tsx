@@ -2,11 +2,17 @@ import { brand } from '@/config/brand';
 import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LocaleLink } from '@/components/ui/locale-link';
+import { buildWhatsAppUrl } from '@/components/ui/whatsapp-button';
 import { getSiteSettings } from '@/lib/sanity/queries';
 
 import styles from './site-footer.module.css';
 
 type Locale = 'es' | 'en';
+
+const WHATSAPP_MESSAGE: Record<Locale, string> = {
+  es: 'Hola, quiero información sobre los tours',
+  en: 'Hi, I want information about the tours',
+};
 
 /** /privacidad y /terminos llegan en la Fase I — mismo trato que el nav del header. */
 const LEGAL_LINKS: Record<Locale, { href: string; label: string }[]> = {
@@ -35,7 +41,15 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
         <div className={styles.grid}>
           <div className={styles.column}>
             <BrandLockup tone="white" size="md" className={styles.businessName} />
-            {siteSettings?.whatsappPrimary && <p>{siteSettings.whatsappPrimary}</p>}
+            {siteSettings?.whatsappPrimary && (
+              <a
+                href={buildWhatsAppUrl(siteSettings.whatsappPrimary, WHATSAPP_MESSAGE[locale])}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {siteSettings.whatsappPrimary}
+              </a>
+            )}
             {siteSettings?.email && <p>{siteSettings.email}</p>}
           </div>
 
