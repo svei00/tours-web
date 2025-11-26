@@ -30,6 +30,15 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
+/**
+ * Sin esto, la página queda estática desde el build de Vercel y los cambios
+ * publicados en Studio (WhatsApp, hero, etc.) nunca se reflejan hasta el
+ * siguiente deploy. 60s = revisa Sanity de nuevo como máximo una vez por
+ * minuto; el visitante de en medio sigue viendo la versión en caché al
+ * instante mientras se regenera en segundo plano (ISR estándar).
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: businessName,
 };

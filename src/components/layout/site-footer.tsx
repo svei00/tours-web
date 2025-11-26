@@ -2,7 +2,7 @@ import { brand } from '@/config/brand';
 import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LocaleLink } from '@/components/ui/locale-link';
-import { buildWhatsAppUrl } from '@/components/ui/whatsapp-button';
+import { buildWhatsAppUrl, formatPhoneDisplay } from '@/components/ui/whatsapp-button';
 import { getSiteSettings } from '@/lib/sanity/queries';
 
 import styles from './site-footer.module.css';
@@ -47,7 +47,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {siteSettings.whatsappPrimary}
+                {formatPhoneDisplay(siteSettings.whatsappPrimary)}
               </a>
             )}
             {siteSettings?.email && <p>{siteSettings.email}</p>}

@@ -14,6 +14,27 @@ export function buildWhatsAppUrl(phone: string, message: string): string {
   return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Formatea el número guardado (solo dígitos, ej. "523222783261") para
+ * mostrarlo legible ("+52 322 278 3261"). Solo afecta el texto en pantalla
+ * — buildWhatsAppUrl sigue usando el valor crudo de siteSettings para la
+ * liga de wa.me.
+ */
+export function formatPhoneDisplay(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+
+  if (digits.length === 12 && digits.startsWith('52')) {
+    const local = digits.slice(2);
+    return `+52 ${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
+  }
+
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+
+  return phone;
+}
+
 type WhatsAppButtonProps = {
   phone: string | null | undefined;
   message: string;

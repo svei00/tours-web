@@ -12,25 +12,31 @@ export const siteSettings = defineType({
   fields: [
     defineField({
       name: 'whatsappPrimary',
-      title: 'WhatsApp principal',
+      title: 'WhatsApp principal *',
+      description: 'Solo dígitos, con código de país, sin "+", espacios ni guiones.',
       type: 'string',
+      placeholder: 'Ej. 523222783261',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'whatsappSecondary',
       title: 'WhatsApp secundario',
+      description: 'Solo dígitos, con código de país, sin "+", espacios ni guiones.',
       type: 'string',
+      placeholder: 'Ej. 523222783261',
     }),
     defineField({
       name: 'phones',
       title: 'Teléfonos',
+      description: 'Para mostrar en el sitio (no son ligas de WhatsApp). Formato libre, ej. +52 322 278 3261.',
       type: 'array',
       of: [defineArrayMember({ type: 'string' })],
     }),
     defineField({
       name: 'email',
-      title: 'Correo',
+      title: 'Correo *',
       type: 'string',
+      placeholder: 'Ej. contacto@puravidatravel.mx',
       validation: (Rule) => Rule.required().email(),
     }),
     defineField({
