@@ -77,9 +77,19 @@
   box-sizing: border-box;
 }
 
+/*
+ * El scrim de abajo ya oscurece la zona del texto, pero con fotos muy
+ * claras (cielo, arena, espuma) seguía sin alcanzar (feedback del
+ * cliente). Un text-shadow apilado actúa como contorno: no depende de
+ * qué haya detrás, así que garantiza contraste sin importar la foto.
+ */
 .headline {
   font-size: var(--font-size-display);
   color: var(--color-white);
+  text-shadow:
+    0 1px 2px rgba(6, 20, 19, 0.7),
+    0 2px 6px rgba(6, 20, 19, 0.55),
+    0 8px 24px rgba(6, 20, 19, 0.4);
 }
 
 .subheadline {
@@ -87,6 +97,9 @@
   color: var(--color-white);
   opacity: 0.92;
   max-width: 46ch;
+  text-shadow:
+    0 1px 2px rgba(6, 20, 19, 0.7),
+    0 2px 8px rgba(6, 20, 19, 0.5);
 }
 
 .cta {

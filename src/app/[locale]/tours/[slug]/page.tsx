@@ -55,7 +55,14 @@ export default async function TourDetailPage({ params }: PageProps) {
           </div>
         </Container>
       </Section>
-      <StickyBookingBar tour={tour} locale={typedLocale} whatsappPhone={siteSettings?.whatsappPrimary} />
+      <StickyBookingBar
+        tour={tour}
+        locale={typedLocale}
+        whatsappPhone={siteSettings?.whatsappPrimary}
+        whatsappSecondaryPhone={siteSettings?.whatsappSecondary}
+        whatsappPrimaryName={siteSettings?.whatsappPrimaryName}
+        whatsappSecondaryName={siteSettings?.whatsappSecondaryName}
+      />
     </>
   );
 }

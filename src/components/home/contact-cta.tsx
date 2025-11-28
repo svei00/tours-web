@@ -31,7 +31,14 @@ export async function ContactCTA({ locale }: { locale: Locale }) {
         <div className={styles.inner}>
           <h2 className={styles.title}>{copy.title}</h2>
           <p className={styles.subtitle}>{copy.subtitle}</p>
-          <WhatsAppButton phone={siteSettings?.whatsappPrimary} message={copy.message} className={styles.cta}>
+          <WhatsAppButton
+            phone={siteSettings?.whatsappPrimary}
+            secondaryPhone={siteSettings?.whatsappSecondary}
+            primaryName={siteSettings?.whatsappPrimaryName}
+            secondaryName={siteSettings?.whatsappSecondaryName}
+            message={copy.message}
+            className={styles.cta}
+          >
             {copy.cta}
           </WhatsAppButton>
         </div>

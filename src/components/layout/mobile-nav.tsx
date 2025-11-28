@@ -2,6 +2,8 @@
 
 import { useRef } from 'react';
 
+import { WhatsAppButton } from '@/components/ui/whatsapp-button';
+
 import { NavLinks, type NavItem } from './nav-links';
 import { SearchForm } from './search-form';
 import styles from './mobile-nav.module.css';
@@ -10,6 +12,7 @@ type Locale = 'es' | 'en';
 
 const OPEN_LABEL: Record<Locale, string> = { es: 'Abrir menú', en: 'Open menu' };
 const CLOSE_LABEL: Record<Locale, string> = { es: 'Cerrar menú', en: 'Close menu' };
+const WHATSAPP_LABEL: Record<Locale, string> = { es: 'Reservar por WhatsApp', en: 'Book on WhatsApp' };
 
 /**
  * El nav de escritorio (`.nav` en site-header) se esconde por completo
@@ -18,7 +21,23 @@ const CLOSE_LABEL: Record<Locale, string> = { es: 'Cerrar menú', en: 'Close men
  * que TourGallery): foco atrapado, cierre con Escape y clic afuera
  * gratis del navegador, sin librería.
  */
-export function MobileNav({ items, locale }: { items: NavItem[]; locale: Locale }) {
+export function MobileNav({
+  items,
+  locale,
+  whatsappPhone,
+  whatsappSecondaryPhone,
+  whatsappPrimaryName,
+  whatsappSecondaryName,
+  whatsappMessage,
+}: {
+  items: NavItem[];
+  locale: Locale;
+  whatsappPhone: string | null | undefined;
+  whatsappSecondaryPhone?: string | null | undefined;
+  whatsappPrimaryName?: string | null | undefined;
+  whatsappSecondaryName?: string | null | undefined;
+  whatsappMessage: string;
+}) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
@@ -50,6 +69,16 @@ export function MobileNav({ items, locale }: { items: NavItem[]; locale: Locale 
           </button>
           <SearchForm locale={locale} variant="inline" onNavigate={() => dialogRef.current?.close()} />
           <NavLinks items={items} locale={locale} variant="drawer" onNavigate={() => dialogRef.current?.close()} />
+          <WhatsAppButton
+            phone={whatsappPhone}
+            secondaryPhone={whatsappSecondaryPhone}
+            primaryName={whatsappPrimaryName}
+            secondaryName={whatsappSecondaryName}
+            message={whatsappMessage}
+            className={styles.whatsapp}
+          >
+            {WHATSAPP_LABEL[locale]}
+          </WhatsAppButton>
         </div>
       </dialog>
     </>

@@ -19,11 +19,24 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'whatsappPrimaryName',
+      title: 'Nombre de quién atiende el WhatsApp principal',
+      description: 'Solo se usa si también llenas el WhatsApp secundario — deja elegir a quién escribirle.',
+      type: 'string',
+      placeholder: 'Ej. Ventas',
+    }),
+    defineField({
       name: 'whatsappSecondary',
       title: 'WhatsApp secundario',
       description: 'Solo dígitos, con código de país, sin "+", espacios ni guiones.',
       type: 'string',
       placeholder: 'Ej. 523222783261',
+    }),
+    defineField({
+      name: 'whatsappSecondaryName',
+      title: 'Nombre de quién atiende el WhatsApp secundario',
+      type: 'string',
+      placeholder: 'Ej. Reservaciones',
     }),
     defineField({
       name: 'phones',
@@ -77,6 +90,7 @@ export const siteSettings = defineType({
     defineField({ name: 'facebookUrl', title: 'Facebook', type: 'url' }),
     defineField({ name: 'instagramUrl', title: 'Instagram', type: 'url' }),
     defineField({ name: 'tiktokUrl', title: 'TikTok', type: 'url' }),
+    defineField({ name: 'youtubeUrl', title: 'YouTube', type: 'url' }),
     defineField({
       name: 'heroHeadline',
       title: 'Titular del hero',

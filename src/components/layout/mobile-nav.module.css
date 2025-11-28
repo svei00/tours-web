@@ -53,6 +53,12 @@
   --header-fg-active: var(--color-primary-600);
 }
 
+.whatsapp {
+  margin-top: auto;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+}
+
 .closeButton {
   align-self: flex-end;
   border: none;

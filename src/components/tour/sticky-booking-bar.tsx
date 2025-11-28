@@ -16,10 +16,16 @@ export function StickyBookingBar({
   tour,
   locale,
   whatsappPhone,
+  whatsappSecondaryPhone,
+  whatsappPrimaryName,
+  whatsappSecondaryName,
 }: {
   tour: TourDetail;
   locale: Locale;
   whatsappPhone: string | null | undefined;
+  whatsappSecondaryPhone?: string | null | undefined;
+  whatsappPrimaryName?: string | null | undefined;
+  whatsappSecondaryName?: string | null | undefined;
 }) {
   const title = localeValue(tour.title, locale);
   const defaultMessage = locale === 'es' ? `Hola, quiero reservar: ${title}` : `Hi, I'd like to book: ${title}`;
@@ -28,7 +34,13 @@ export function StickyBookingBar({
   return (
     <div className={styles.bar}>
       <span className={styles.price}>{formatPrice(tour.priceAmount, tour.priceCurrency, locale)}</span>
-      <WhatsAppButton phone={whatsappPhone} message={customMessage || defaultMessage}>
+      <WhatsAppButton
+        phone={whatsappPhone}
+        secondaryPhone={whatsappSecondaryPhone}
+        primaryName={whatsappPrimaryName}
+        secondaryName={whatsappSecondaryName}
+        message={customMessage || defaultMessage}
+      >
         {locale === 'es' ? 'Reservar' : 'Book now'}
       </WhatsAppButton>
     </div>

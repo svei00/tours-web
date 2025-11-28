@@ -2,7 +2,7 @@ import { brand } from '@/config/brand';
 import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LocaleLink } from '@/components/ui/locale-link';
-import { buildWhatsAppUrl, formatPhoneDisplay } from '@/components/ui/whatsapp-button';
+import { buildWhatsAppUrl, formatPhoneDisplay } from '@/lib/whatsapp';
 import { getSiteSettings } from '@/lib/sanity/queries';
 
 import styles from './site-footer.module.css';
@@ -14,7 +14,6 @@ const WHATSAPP_MESSAGE: Record<Locale, string> = {
   en: 'Hi, I want information about the tours',
 };
 
-/** /privacidad y /terminos llegan en la Fase I — mismo trato que el nav del header. */
 const LEGAL_LINKS: Record<Locale, { href: string; label: string }[]> = {
   es: [
     { href: '/privacidad', label: 'Aviso de privacidad' },
@@ -47,10 +46,21 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                {siteSettings.whatsappPrimaryName ? `${siteSettings.whatsappPrimaryName}: ` : ''}
                 {formatPhoneDisplay(siteSettings.whatsappPrimary)}
               </a>
             )}
-            {siteSettings?.email && <p>{siteSettings.email}</p>}
+            {siteSettings?.whatsappSecondary && (
+              <a
+                href={buildWhatsAppUrl(siteSettings.whatsappSecondary, WHATSAPP_MESSAGE[locale])}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {siteSettings.whatsappSecondaryName ? `${siteSettings.whatsappSecondaryName}: ` : ''}
+                {formatPhoneDisplay(siteSettings.whatsappSecondary)}
+              </a>
+            )}
+            {siteSettings?.email && <a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a>}
           </div>
 
           <div className={styles.column}>
@@ -72,6 +82,11 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             {siteSettings?.tiktokUrl && (
               <a href={siteSettings.tiktokUrl} target="_blank" rel="noopener noreferrer">
                 TikTok
+              </a>
+            )}
+            {siteSettings?.youtubeUrl && (
+              <a href={siteSettings.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                YouTube
               </a>
             )}
           </div>

@@ -13,13 +13,16 @@ import type { LocaleString, RichImageValue } from './types';
  */
 export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   whatsappPrimary,
+  whatsappPrimaryName,
   whatsappSecondary,
+  whatsappSecondaryName,
   phones,
   email,
   googleBusinessProfileUrl,
   facebookUrl,
   instagramUrl,
   tiktokUrl,
+  youtubeUrl,
   heroHeadline,
   heroSubheadline,
   heroSlides,
@@ -28,13 +31,16 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
 
 export type SiteSettings = {
   whatsappPrimary: string | null;
+  whatsappPrimaryName: string | null;
   whatsappSecondary: string | null;
+  whatsappSecondaryName: string | null;
   phones: string[] | null;
   email: string | null;
   googleBusinessProfileUrl: string | null;
   facebookUrl: string | null;
   instagramUrl: string | null;
   tiktokUrl: string | null;
+  youtubeUrl: string | null;
   heroHeadline: LocaleString | null;
   heroSubheadline: LocaleString | null;
   heroSlides: RichImageValue[] | null;

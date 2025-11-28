@@ -62,12 +62,23 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
             <LanguageSwitcher locale={locale} />
             <WhatsAppButton
               phone={siteSettings?.whatsappPrimary}
+              secondaryPhone={siteSettings?.whatsappSecondary}
+              primaryName={siteSettings?.whatsappPrimaryName}
+              secondaryName={siteSettings?.whatsappSecondaryName}
               message={WHATSAPP_MESSAGE[locale]}
               className={styles.whatsapp}
             >
               WhatsApp
             </WhatsAppButton>
-            <MobileNav items={NAV_ITEMS[locale]} locale={locale} />
+            <MobileNav
+              items={NAV_ITEMS[locale]}
+              locale={locale}
+              whatsappPhone={siteSettings?.whatsappPrimary}
+              whatsappSecondaryPhone={siteSettings?.whatsappSecondary}
+              whatsappPrimaryName={siteSettings?.whatsappPrimaryName}
+              whatsappSecondaryName={siteSettings?.whatsappSecondaryName}
+              whatsappMessage={WHATSAPP_MESSAGE[locale]}
+            />
           </div>
         </div>
       </Container>

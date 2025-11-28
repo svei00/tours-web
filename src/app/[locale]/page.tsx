@@ -33,6 +33,9 @@ export default async function HomePage({ params }: HomePageProps) {
         headline={siteSettings?.heroHeadline ?? null}
         subheadline={siteSettings?.heroSubheadline ?? null}
         whatsappPhone={siteSettings?.whatsappPrimary}
+        whatsappSecondaryPhone={siteSettings?.whatsappSecondary}
+        whatsappPrimaryName={siteSettings?.whatsappPrimaryName}
+        whatsappSecondaryName={siteSettings?.whatsappSecondaryName}
         locale={typedLocale}
       />
       <TrustStrip locale={typedLocale} />

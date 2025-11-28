@@ -42,6 +42,9 @@ type HeroCarouselProps = {
   headline: LocaleString | null;
   subheadline: LocaleString | null;
   whatsappPhone: string | null | undefined;
+  whatsappSecondaryPhone?: string | null | undefined;
+  whatsappPrimaryName?: string | null | undefined;
+  whatsappSecondaryName?: string | null | undefined;
   locale: Locale;
 };
 
@@ -52,7 +55,16 @@ type HeroCarouselProps = {
  * de verdad importa es que el mensaje y el botón de WhatsApp nunca se
  * sustituyan debajo del cursor de alguien.
  */
-export function HeroCarousel({ slides, headline, subheadline, whatsappPhone, locale }: HeroCarouselProps) {
+export function HeroCarousel({
+  slides,
+  headline,
+  subheadline,
+  whatsappPhone,
+  whatsappSecondaryPhone,
+  whatsappPrimaryName,
+  whatsappSecondaryName,
+  locale,
+}: HeroCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   /**
@@ -131,7 +143,14 @@ export function HeroCarousel({ slides, headline, subheadline, whatsappPhone, loc
       <div className={styles.content}>
         <h1 className={styles.headline}>{headlineText}</h1>
         {subheadlineText && <p className={styles.subheadline}>{subheadlineText}</p>}
-        <WhatsAppButton phone={whatsappPhone} message={whatsappMessage} className={styles.cta}>
+        <WhatsAppButton
+          phone={whatsappPhone}
+          secondaryPhone={whatsappSecondaryPhone}
+          primaryName={whatsappPrimaryName}
+          secondaryName={whatsappSecondaryName}
+          message={whatsappMessage}
+          className={styles.cta}
+        >
           {CTA_LABEL[locale]}
         </WhatsAppButton>
       </div>

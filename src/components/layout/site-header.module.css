@@ -144,3 +144,17 @@
 .whatsapp {
   padding: var(--space-2) var(--space-4);
 }
+
+/*
+ * Bug reportado por el cliente (Galaxy S24): con buscador + selector de
+ * idioma + este botón + el trigger del menú todos en la misma fila, no
+ * cabían y el menú/WhatsApp se salían de pantalla. Abajo de 768px ya hay
+ * dos vías a WhatsApp (la barra flotante inferior y el botón dentro del
+ * drawer, ver mobile-nav.tsx) así que este se esconde para dejarle
+ * espacio al resto de .actions.
+ */
+@media (max-width: 767px) {
+  .whatsapp {
+    display: none;
+  }
+}
