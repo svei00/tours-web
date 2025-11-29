@@ -67,16 +67,27 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
           <div className={styles.actions}>
             <SearchForm locale={locale} variant="icon" />
             <LanguageSwitcher locale={locale} />
-            <WhatsAppButton
-              phone={siteSettings?.whatsappPrimary}
-              secondaryPhone={siteSettings?.whatsappSecondary}
-              primaryName={siteSettings?.whatsappPrimaryName}
-              secondaryName={siteSettings?.whatsappSecondaryName}
-              message={WHATSAPP_MESSAGE[locale]}
-              className={styles.whatsapp}
-            >
-              WhatsApp
-            </WhatsAppButton>
+            {/*
+              Envoltorio dedicado en vez de pasarle `display:none` solo al
+              botón interno (como antes) -- con dos números configurados,
+              WhatsAppButton renderiza su propio div `.wrap` alrededor del
+              botón (para el selector), y ese `.wrap` se quedaba en el flujo
+              del flexbox aunque el botón de adentro estuviera oculto,
+              robándose un gap de sobra en el header (parte del bug de
+              Galaxy S24 -- ver también brand-lockup.module.css).
+            */}
+            <div className={styles.whatsappWrapper}>
+              <WhatsAppButton
+                phone={siteSettings?.whatsappPrimary}
+                secondaryPhone={siteSettings?.whatsappSecondary}
+                primaryName={siteSettings?.whatsappPrimaryName}
+                secondaryName={siteSettings?.whatsappSecondaryName}
+                message={WHATSAPP_MESSAGE[locale]}
+                className={styles.whatsapp}
+              >
+                WhatsApp
+              </WhatsAppButton>
+            </div>
             <MobileNav
               items={navItems}
               locale={locale}

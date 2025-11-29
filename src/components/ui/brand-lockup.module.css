@@ -80,3 +80,20 @@
 .md .name {
   font-size: var(--font-size-h2);
 }
+
+/*
+ * Bug reportado por el cliente (Galaxy S24, ~384px de ancho real): el
+ * header no cabía. La causa era esta línea -- "VALLARTA TOURS" con
+ * letter-spacing:0.32em mide MÁS que "Pura Vida" (141px vs 105px medidos),
+ * así que es ella la que decide el ancho del wordmark completo, no el
+ * nombre. Se esconde solo en `.sm` (el tamaño que usa el header; `.md` es
+ * el del footer, que sí tiene espacio de sobra) y solo por debajo de
+ * 480px, más angosto que cualquier teléfono común en vertical salvo los
+ * más viejos -- el nombre solo ("Pura Vida") se queda siempre visible.
+ */
+@media (max-width: 480px) {
+  .sm .tagline,
+  .sm .rule {
+    display: none;
+  }
+}

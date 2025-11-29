@@ -2,6 +2,7 @@ import { brand } from '@/config/brand';
 import { BrandLockup } from '@/components/ui/brand-lockup';
 import { Container } from '@/components/ui/container';
 import { LocaleLink } from '@/components/ui/locale-link';
+import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from '@/components/ui/social-icons';
 import { buildWhatsAppUrl, formatPhoneDisplay } from '@/lib/whatsapp';
 import { getSiteSettings } from '@/lib/sanity/queries';
 
@@ -70,22 +71,26 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
               </a>
             )}
             {siteSettings?.facebookUrl && (
-              <a href={siteSettings.facebookUrl} target="_blank" rel="noopener noreferrer">
+              <a href={siteSettings.facebookUrl} target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <FacebookIcon />
                 Facebook
               </a>
             )}
             {siteSettings?.instagramUrl && (
-              <a href={siteSettings.instagramUrl} target="_blank" rel="noopener noreferrer">
+              <a href={siteSettings.instagramUrl} target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <InstagramIcon />
                 Instagram
               </a>
             )}
             {siteSettings?.tiktokUrl && (
-              <a href={siteSettings.tiktokUrl} target="_blank" rel="noopener noreferrer">
+              <a href={siteSettings.tiktokUrl} target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <TiktokIcon />
                 TikTok
               </a>
             )}
             {siteSettings?.youtubeUrl && (
-              <a href={siteSettings.youtubeUrl} target="_blank" rel="noopener noreferrer">
+              <a href={siteSettings.youtubeUrl} target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <YoutubeIcon />
                 YouTube
               </a>
             )}

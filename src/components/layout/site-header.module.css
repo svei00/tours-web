@@ -126,6 +126,13 @@
   gap: var(--space-6);
 }
 
+/* Más angosto en móvil (HANDOFF §9, "el espacio en blanco es un material" no aplica cuando no hay espacio de sobra) -- ver también .actions más abajo. */
+@media (max-width: 480px) {
+  .row {
+    gap: var(--space-4);
+  }
+}
+
 .logo {
   display: inline-flex;
   text-decoration: none;
@@ -141,6 +148,12 @@
   align-self: stretch;
 }
 
+@media (max-width: 480px) {
+  .actions {
+    gap: var(--space-3);
+  }
+}
+
 .whatsapp {
   padding: var(--space-2) var(--space-4);
 }
@@ -151,10 +164,18 @@
  * cabían y el menú/WhatsApp se salían de pantalla. Abajo de 768px ya hay
  * dos vías a WhatsApp (la barra flotante inferior y el botón dentro del
  * drawer, ver mobile-nav.tsx) así que este se esconde para dejarle
- * espacio al resto de .actions.
+ * espacio al resto de .actions. El `display:none` vive en el envoltorio
+ * (`.whatsappWrapper`, ver site-header.tsx), no aquí -- ocultar solo el
+ * botón de adentro dejaba vivo el div `.wrap` de WhatsAppButton (el que
+ * arma cuando hay dos números) y ese div seguía cobrando un gap en
+ * `.actions` aunque no mostrara nada.
  */
+.whatsappWrapper {
+  display: contents;
+}
+
 @media (max-width: 767px) {
-  .whatsapp {
+  .whatsappWrapper {
     display: none;
   }
 }

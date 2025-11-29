@@ -153,6 +153,7 @@ export function HeroCarousel({
           secondaryName={whatsappSecondaryName}
           message={whatsappMessage}
           className={styles.cta}
+          menuDirection="up"
         >
           {CTA_LABEL[locale]}
         </WhatsAppButton>

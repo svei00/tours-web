@@ -40,6 +40,7 @@ export function StickyBookingBar({
         primaryName={whatsappPrimaryName}
         secondaryName={whatsappSecondaryName}
         message={customMessage || defaultMessage}
+        menuDirection="up"
       >
         {locale === 'es' ? 'Reservar' : 'Book now'}
       </WhatsAppButton>

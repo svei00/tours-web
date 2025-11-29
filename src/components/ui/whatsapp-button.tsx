@@ -17,6 +17,17 @@ type WhatsAppButtonProps = {
   /** Nombres de quién atiende cada número (siteSettings.whatsapp{Primary,Secondary}Name), para el selector. */
   primaryName?: string | null | undefined;
   secondaryName?: string | null | undefined;
+  /**
+   * Hacia dónde abre el selector cuando hay dos números. `down` (default)
+   * es lo normal -- funciona en el header porque hay todo el alto de la
+   * página debajo. `up` es para cuando el botón vive pegado al borde
+   * inferior de su contenedor: el Hero (que tiene `overflow: hidden`, así
+   * que un menú hacia abajo se recorta antes de llegar a mostrar la
+   * segunda opción) y las barras fijas al fondo de la pantalla
+   * (StickyWhatsAppBar, StickyBookingBar) -- ahí un menú hacia abajo cae
+   * directo fuera del viewport, invisible.
+   */
+  menuDirection?: 'up' | 'down';
 };
 
 /**
@@ -40,6 +51,7 @@ export function WhatsAppButton({
   secondaryPhone,
   primaryName,
   secondaryName,
+  menuDirection = 'down',
 }: WhatsAppButtonProps) {
   const [open, setOpen] = useState(false);
 
@@ -74,7 +86,10 @@ export function WhatsAppButton({
       >
         {children}
       </Button>
-      <div className={open ? `${styles.menu} ${styles.menuOpen}` : styles.menu} role="menu">
+      <div
+        className={[styles.menu, menuDirection === 'up' && styles.menuUp, open && styles.menuOpen].filter(Boolean).join(' ')}
+        role="menu"
+      >
         {options.map(({ phone: optionPhone, name }) => (
           <a
             key={optionPhone}

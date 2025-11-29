@@ -17,6 +17,14 @@
   color: var(--color-muted);
 }
 
+/* Un poco más angosto en móvil -- parte del mismo ajuste de espacio del header por el bug de Galaxy S24 (ver brand-lockup.module.css y site-header.module.css). "ES"/"EN" se leen igual de bien con menos aire a los lados. */
+@media (max-width: 480px) {
+  .link,
+  .active {
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
 .active {
   background-color: var(--color-white);
   color: var(--color-ink);
