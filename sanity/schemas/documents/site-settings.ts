@@ -110,6 +110,14 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.max(5).error('Máximo 5 diapositivas.'),
     }),
     defineField({
+      name: 'heroScrimEnabled',
+      title: 'Fondo oscuro detrás del texto del hero',
+      description:
+        'Oscurece la foto principal para que el título en blanco se lea bien. Actívalo si al cambiar de foto el texto cuesta trabajo leer; desactívalo si la foto ya es oscura y el fondo se ve innecesario.',
+      type: 'boolean',
+      initialValue: true,
+    }),
+    defineField({
       name: 'reviewsSectionVisible',
       title: 'Mostrar la sección de reseñas',
       type: 'boolean',

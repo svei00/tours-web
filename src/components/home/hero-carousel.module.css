@@ -80,16 +80,23 @@
 /*
  * El scrim de abajo ya oscurece la zona del texto, pero con fotos muy
  * claras (cielo, arena, espuma) seguía sin alcanzar (feedback del
- * cliente). Un text-shadow apilado actúa como contorno: no depende de
- * qué haya detrás, así que garantiza contraste sin importar la foto.
+ * cliente). Las primeras cuatro capas del text-shadow son un contorno de
+ * verdad -- 1px en las cuatro direcciones, casi opaco -- y las últimas dos
+ * son el halo suave de antes para dar profundidad. El contorno es lo que
+ * de verdad garantiza contraste sin importar la foto ni si el scrim está
+ * apagado (ver `scrimEnabled` en hero-carousel.tsx); el halo solo
+ * suaviza el borde.
  */
 .headline {
   font-size: var(--font-size-display);
   color: var(--color-white);
   text-shadow:
-    0 1px 2px rgba(6, 20, 19, 0.7),
-    0 2px 6px rgba(6, 20, 19, 0.55),
-    0 8px 24px rgba(6, 20, 19, 0.4);
+    -1px -1px 0 rgba(6, 20, 19, 0.85),
+    1px -1px 0 rgba(6, 20, 19, 0.85),
+    -1px 1px 0 rgba(6, 20, 19, 0.85),
+    1px 1px 0 rgba(6, 20, 19, 0.85),
+    0 2px 6px rgba(6, 20, 19, 0.6),
+    0 8px 24px rgba(6, 20, 19, 0.45);
 }
 
 .subheadline {
@@ -98,7 +105,10 @@
   opacity: 0.92;
   max-width: 46ch;
   text-shadow:
-    0 1px 2px rgba(6, 20, 19, 0.7),
+    -1px -1px 0 rgba(6, 20, 19, 0.8),
+    1px -1px 0 rgba(6, 20, 19, 0.8),
+    -1px 1px 0 rgba(6, 20, 19, 0.8),
+    1px 1px 0 rgba(6, 20, 19, 0.8),
     0 2px 8px rgba(6, 20, 19, 0.5);
 }
 

@@ -2,6 +2,8 @@ import { ContactCTA } from '@/components/home/contact-cta';
 import { CurationSection } from '@/components/home/curation-section';
 import { FeaturedTours } from '@/components/home/featured-tours';
 import { HeroCarousel } from '@/components/home/hero-carousel';
+import { PromoBanner } from '@/components/home/promo-banner';
+import { ReviewsBand } from '@/components/home/reviews-band';
 import { TrustStrip } from '@/components/home/trust-strip';
 import { VerticalVideoStrip } from '@/components/home/vertical-video-strip';
 import { getSiteSettings } from '@/lib/sanity/queries';
@@ -16,10 +18,10 @@ type HomePageProps = {
  * verificación de tokens de la Fase A — esa ya cumplió su función (ver
  * NOTES.md, Fase A) y HANDOFF nunca pidió conservarla como ruta.
  *
- * Se arma sección por sección: todo lo de Fase E ya está aquí excepto
- * ReviewsBand y PromoBanner, que dependen de los interruptores de
- * visibilidad de reseñas/promociones -- eso es trabajo de Fase F, no de
- * esta (HANDOFF §14).
+ * Se arma sección por sección. ReviewsBand y PromoBanner llegaron en Fase
+ * F (HANDOFF §14) -- cada una se oculta sola cuando no hay nada que
+ * mostrar (sin reseñas destacadas, sin promoción activa), mismo trato que
+ * el resto de las secciones de Fase E.
  */
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
@@ -36,12 +38,15 @@ export default async function HomePage({ params }: HomePageProps) {
         whatsappSecondaryPhone={siteSettings?.whatsappSecondary}
         whatsappPrimaryName={siteSettings?.whatsappPrimaryName}
         whatsappSecondaryName={siteSettings?.whatsappSecondaryName}
+        scrimEnabled={siteSettings?.heroScrimEnabled}
         locale={typedLocale}
       />
       <TrustStrip locale={typedLocale} />
       <FeaturedTours locale={typedLocale} />
       <CurationSection locale={typedLocale} />
       <VerticalVideoStrip locale={typedLocale} />
+      <PromoBanner locale={typedLocale} />
+      <ReviewsBand locale={typedLocale} />
       <ContactCTA locale={typedLocale} />
     </>
   );

@@ -26,7 +26,9 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   heroHeadline,
   heroSubheadline,
   heroSlides,
-  foundedYear
+  heroScrimEnabled,
+  foundedYear,
+  reviewsSectionVisible
 }`;
 
 export type SiteSettings = {
@@ -44,7 +46,9 @@ export type SiteSettings = {
   heroHeadline: LocaleString | null;
   heroSubheadline: LocaleString | null;
   heroSlides: RichImageValue[] | null;
+  heroScrimEnabled: boolean | null;
   foundedYear: number | null;
+  reviewsSectionVisible: boolean | null;
 };
 
 /**

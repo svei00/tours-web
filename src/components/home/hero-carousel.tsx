@@ -45,6 +45,8 @@ type HeroCarouselProps = {
   whatsappSecondaryPhone?: string | null | undefined;
   whatsappPrimaryName?: string | null | undefined;
   whatsappSecondaryName?: string | null | undefined;
+  /** `siteSettings.heroScrimEnabled` -- null/undefined (campo sin llenar todavía) cuenta como encendido, mismo trato que el resto de los booleanos del Studio. */
+  scrimEnabled?: boolean | null;
   locale: Locale;
 };
 
@@ -63,6 +65,7 @@ export function HeroCarousel({
   whatsappSecondaryPhone,
   whatsappPrimaryName,
   whatsappSecondaryName,
+  scrimEnabled,
   locale,
 }: HeroCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -138,7 +141,7 @@ export function HeroCarousel({
         <div className={styles.fallbackBg} />
       )}
 
-      <div className={styles.scrim} aria-hidden="true" />
+      {scrimEnabled !== false && <div className={styles.scrim} aria-hidden="true" />}
 
       <div className={styles.content}>
         <h1 className={styles.headline}>{headlineText}</h1>

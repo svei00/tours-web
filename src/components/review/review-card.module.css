@@ -1,0 +1,55 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.stars {
+  font-size: var(--font-size-small);
+  letter-spacing: 0.05em;
+}
+
+.starFilled {
+  /* Ámbar, no coral -- el coral está reservado a precios (HANDOFF §7); esto es la única otra excepción del sistema. */
+  color: var(--color-amber-500, #f2a93b);
+}
+
+.starEmpty {
+  color: var(--color-sand);
+}
+
+.quote {
+  margin: 0;
+  font-size: var(--font-size-body);
+  color: var(--color-ink);
+  flex-grow: 1;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--font-size-caption);
+  color: var(--color-muted);
+}
+
+.author {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.source {
+  margin-left: auto;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.source:hover {
+  text-decoration: underline;
+}

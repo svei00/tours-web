@@ -4,6 +4,7 @@ import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { LocaleLink } from '@/components/ui/locale-link';
 import { WhatsAppButton } from '@/components/ui/whatsapp-button';
 import { getSiteSettings } from '@/lib/sanity/queries';
+import { getReviewStats } from '@/lib/sanity/reviews';
 
 import { HeaderShell } from './header-shell';
 import { MobileNav } from './mobile-nav';
@@ -14,13 +15,14 @@ import styles from './site-header.module.css';
 type Locale = 'es' | 'en';
 
 /**
- * Las rutas de /nosotros, /resenas y /contacto todavía no existen (llegan
- * en las Fases F e I, y /nosotros no tiene fase dueña todavía -- ver
- * NOTES.md) — el nav ya las enlaza porque construir el header dos veces
- * no vale la pena; van a dar 404 hasta entonces, y eso es esperado, no un
- * bug. Cada item lleva ícono (feedback del cliente: el de "Inicio" con
- * ⌂ no convencía, y pidió que el resto también tuviera uno) — se quedan
- * como emoji, mismo criterio que ☰/✕/🔍 en vez de una librería de SVG.
+ * Cada item lleva ícono (feedback del cliente: el de "Inicio" con ⌂ no
+ * convencía, y pidió que el resto también tuviera uno) — se quedan como
+ * emoji, mismo criterio que ☰/✕/🔍 en vez de una librería de SVG.
+ *
+ * "Reseñas"/"Reviews" se filtra en tiempo de render (ver más abajo) con
+ * menos de seis reseñas visibles (HANDOFF §6) -- por eso no está marcado
+ * aquí de ninguna forma especial, la lista completa siempre incluye el
+ * item y quien decide si se queda es SiteHeader.
  */
 const NAV_ITEMS: Record<Locale, NavItem[]> = {
   es: [
@@ -39,13 +41,18 @@ const NAV_ITEMS: Record<Locale, NavItem[]> = {
   ],
 };
 
+const REVIEWS_HREF: Record<Locale, string> = { es: '/resenas', en: '/reviews' };
+
 const WHATSAPP_MESSAGE: Record<Locale, string> = {
   es: 'Hola, quiero información sobre los tours',
   en: 'Hi, I want information about the tours',
 };
 
 export async function SiteHeader({ locale }: { locale: Locale }) {
-  const siteSettings = await getSiteSettings();
+  const [siteSettings, reviewStats] = await Promise.all([getSiteSettings(), getReviewStats()]);
+
+  const navItems =
+    reviewStats.count >= 6 ? NAV_ITEMS[locale] : NAV_ITEMS[locale].filter((item) => item.href !== REVIEWS_HREF[locale]);
 
   return (
     <HeaderShell>
@@ -55,7 +62,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
             <BrandLockup tone="ink" size="sm" />
           </LocaleLink>
 
-          <NavLinks items={NAV_ITEMS[locale]} locale={locale} variant="bar" />
+          <NavLinks items={navItems} locale={locale} variant="bar" />
 
           <div className={styles.actions}>
             <SearchForm locale={locale} variant="icon" />
@@ -71,7 +78,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
               WhatsApp
             </WhatsAppButton>
             <MobileNav
-              items={NAV_ITEMS[locale]}
+              items={navItems}
               locale={locale}
               whatsappPhone={siteSettings?.whatsappPrimary}
               whatsappSecondaryPhone={siteSettings?.whatsappSecondary}

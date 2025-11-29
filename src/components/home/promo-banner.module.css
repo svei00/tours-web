@@ -1,0 +1,40 @@
+.section {
+  padding-block: var(--space-6);
+  /* Coral se gana su lugar aquí -- HANDOFF §7 lo reserva para precios y promociones. */
+  background-color: var(--color-accent-500);
+  color: var(--color-accent-foreground);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.copy {
+  flex: 1 1 320px;
+}
+
+.title {
+  font-weight: 700;
+  font-size: var(--font-size-bodyLg);
+}
+
+.description {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-small);
+  opacity: 0.9;
+}
+
+.cta {
+  flex-shrink: 0;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cta:hover {
+  text-decoration: underline;
+}
