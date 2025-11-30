@@ -9,11 +9,17 @@ import { TourHero } from '@/components/tour/tour-hero';
 import { TourVideos } from '@/components/tour/tour-videos';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
+import { JsonLd } from '@/components/seo/json-ld';
+import { breadcrumbListJsonLd, touristTripJsonLd } from '@/lib/seo/json-ld';
+import { buildAlternates, LOCALIZED_PATHS, ogImageUrl, SITE_URL } from '@/lib/seo/metadata';
 import { getSiteSettings } from '@/lib/sanity/queries';
 import { getTourBySlug } from '@/lib/sanity/tours';
-import { localeValue, type Locale } from '@/lib/sanity/types';
+import { localeValue, tourSlugFor, type Locale } from '@/lib/sanity/types';
 
 import styles from './page.module.css';
+
+const BREADCRUMB_HOME: Record<Locale, string> = { es: 'Inicio', en: 'Home' };
+const BREADCRUMB_TOURS: Record<Locale, string> = { es: 'Tours', en: 'Tours' };
 
 /**
  * La página que vende (HANDOFF §6). Sin generateStaticParams a propósito:
@@ -29,9 +35,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!tour) return {};
 
   const typedLocale = locale as Locale;
+  const title = localeValue(tour.title, typedLocale);
+  const description = localeValue(tour.shortDescription, typedLocale);
+  const image = ogImageUrl(tour.heroImage);
+
   return {
-    title: localeValue(tour.title, typedLocale),
-    description: localeValue(tour.shortDescription, typedLocale),
+    title,
+    description,
+    alternates: buildAlternates(typedLocale, `/tours/${tour.slugEs}`, `/tours/${tour.slugEn}`),
+    ...(image && { openGraph: { title, description, images: [{ url: image, width: 1200, height: 630 }] } }),
   };
 }
 
@@ -42,8 +54,19 @@ export default async function TourDetailPage({ params }: PageProps) {
   const [tour, siteSettings] = await Promise.all([getTourBySlug(slug), getSiteSettings()]);
   if (!tour) notFound();
 
+  const pageUrl = `${SITE_URL}/${typedLocale}/tours/${tourSlugFor(tour, typedLocale)}`;
+  const toursListUrl = `${SITE_URL}/${typedLocale}${LOCALIZED_PATHS.tours[typedLocale]}`;
+
   return (
     <>
+      <JsonLd data={touristTripJsonLd(tour, typedLocale, pageUrl)} />
+      <JsonLd
+        data={breadcrumbListJsonLd([
+          { name: BREADCRUMB_HOME[typedLocale], url: `${SITE_URL}/${typedLocale}` },
+          { name: BREADCRUMB_TOURS[typedLocale], url: toursListUrl },
+          { name: localeValue(tour.title, typedLocale), url: pageUrl },
+        ])}
+      />
       <TourHero tour={tour} locale={typedLocale} />
       <Section>
         <Container>

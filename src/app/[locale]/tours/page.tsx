@@ -5,6 +5,7 @@ import { TagFilterBar } from '@/components/tour/tag-filter-bar';
 import { TourGrid } from '@/components/tour/tour-grid';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
+import { buildAlternates, LOCALIZED_PATHS } from '@/lib/seo/metadata';
 import { getTagList, getTourList } from '@/lib/sanity/tours';
 import { localeValue, type Locale } from '@/lib/sanity/types';
 
@@ -26,9 +27,17 @@ type PageProps = {
   searchParams: Promise<{ q?: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+/** `noindex` cuando trae `?q=` (HANDOFF §8, mismo criterio de "no declarar lo que no hace falta"): un resultado de búsqueda es contenido duplicado/delgado, no una página que valga la pena posicionar por su cuenta. */
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  return { title: COPY[locale as Locale].title };
+  const { q } = await searchParams;
+  const typedLocale = locale as Locale;
+
+  return {
+    title: COPY[typedLocale].title,
+    alternates: buildAlternates(typedLocale, LOCALIZED_PATHS.tours.es, LOCALIZED_PATHS.tours.en),
+    ...(q?.trim() && { robots: { index: false, follow: true } }),
+  };
 }
 
 /**

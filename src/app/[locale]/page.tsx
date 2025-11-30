@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import { ContactCTA } from '@/components/home/contact-cta';
 import { CurationSection } from '@/components/home/curation-section';
 import { FeaturedTours } from '@/components/home/featured-tours';
@@ -6,12 +8,19 @@ import { PromoBanner } from '@/components/home/promo-banner';
 import { ReviewsBand } from '@/components/home/reviews-band';
 import { TrustStrip } from '@/components/home/trust-strip';
 import { VerticalVideoStrip } from '@/components/home/vertical-video-strip';
+import { buildAlternates, LOCALIZED_PATHS } from '@/lib/seo/metadata';
 import { getSiteSettings } from '@/lib/sanity/queries';
 import type { Locale } from '@/lib/sanity/types';
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
 };
+
+/** Sin `title` propio a propósito -- hereda el `title.default` del layout raíz (el nombre del negocio) en vez de repetirlo por la plantilla. */
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return { alternates: buildAlternates(locale as Locale, LOCALIZED_PATHS.home.es, LOCALIZED_PATHS.home.en) };
+}
 
 /**
  * Home real (HANDOFF §6 y §14, Fase E). Reemplaza la página de

@@ -1,1 +1,1 @@
-export { default } from '@/components/misc/contact-page';
+export { default, generateMetadata } from '@/components/misc/contact-page';

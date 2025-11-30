@@ -1,7 +1,17 @@
-import { ComingSoon } from './coming-soon';
+import type { Metadata } from 'next';
+
+import { comingSoonMetadata } from '@/lib/seo/metadata';
 import type { Locale } from '@/lib/sanity/types';
 
+import { ComingSoon } from './coming-soon';
+
 const TITLE: Record<Locale, string> = { es: 'Nosotros', en: 'About' };
+
+/** `noindex` -- todavía es el placeholder de ComingSoon, no la página real (HANDOFF §8). Quitar esto cuando /nosotros tenga contenido de verdad. */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return comingSoonMetadata(TITLE[locale as Locale]);
+}
 
 /**
  * Compartido por /nosotros y /about (ver los page.tsx de esas rutas,

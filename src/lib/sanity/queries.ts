@@ -23,13 +23,31 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   instagramUrl,
   tiktokUrl,
   youtubeUrl,
+  address,
+  openingHours,
   heroHeadline,
   heroSubheadline,
   heroSlides,
   heroScrimEnabled,
   foundedYear,
-  reviewsSectionVisible
+  reviewsSectionVisible,
+  defaultSeo
 }`;
+
+export type SiteAddress = {
+  street: string | null;
+  city: string | null;
+  state: string | null;
+  postalCode: string | null;
+  country: string | null;
+  geo: { lat: number; lng: number } | null;
+};
+
+export type DefaultSeo = {
+  metaTitle: string | null;
+  metaDescription: string | null;
+  ogImage: RichImageValue | null;
+};
 
 export type SiteSettings = {
   whatsappPrimary: string | null;
@@ -43,12 +61,15 @@ export type SiteSettings = {
   instagramUrl: string | null;
   tiktokUrl: string | null;
   youtubeUrl: string | null;
+  address: SiteAddress | null;
+  openingHours: string | null;
   heroHeadline: LocaleString | null;
   heroSubheadline: LocaleString | null;
   heroSlides: RichImageValue[] | null;
   heroScrimEnabled: boolean | null;
   foundedYear: number | null;
   reviewsSectionVisible: boolean | null;
+  defaultSeo: DefaultSeo | null;
 };
 
 /**
