@@ -1,6 +1,20 @@
+/*
+ * Bug reportado por Svei: en el Hero, el menú del selector (dos números)
+ * se abría lejos a la derecha del botón, desconectado de él. La causa no
+ * era el menú -- era este `.wrap`. El Hero mete el botón dentro de un
+ * contenedor `flex-direction: column` que nunca fija `align-items`
+ * (default `stretch`), así que `.wrap` se estiraba al ancho completo de
+ * esa columna aunque el botón visible adentro se quedara con su tamaño
+ * normal. El menú, anclado con `right: 0` contra ESE `.wrap` ya estirado
+ * (no contra el botón), terminaba lejos a la derecha, fuera de la vista.
+ * `align-self: flex-start` saca a `.wrap` del estiramiento sin importar
+ * en qué tipo de contenedor flex viva -- vuelve a medir solo lo que mide
+ * el botón, en cualquier página que use este componente.
+ */
 .wrap {
   position: relative;
   display: inline-flex;
+  align-self: flex-start;
 }
 
 .menu {
