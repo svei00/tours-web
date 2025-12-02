@@ -146,17 +146,25 @@ export function HeroCarousel({
       <div className={styles.content}>
         <h1 className={styles.headline}>{headlineText}</h1>
         {subheadlineText && <p className={styles.subheadline}>{subheadlineText}</p>}
-        <WhatsAppButton
-          phone={whatsappPhone}
-          secondaryPhone={whatsappSecondaryPhone}
-          primaryName={whatsappPrimaryName}
-          secondaryName={whatsappSecondaryName}
-          message={whatsappMessage}
-          className={styles.cta}
-          menuDirection="up"
-        >
-          {CTA_LABEL[locale]}
-        </WhatsAppButton>
+        {/*
+          `.ctaWrap` (no `.wrap` de WhatsAppButton, que es compartido con el
+          header/las barras fijas) es lo que evita que el selector de dos
+          números se estire al ancho de esta columna -- ver el comentario
+          en hero-carousel.module.css.
+        */}
+        <div className={styles.ctaWrap}>
+          <WhatsAppButton
+            phone={whatsappPhone}
+            secondaryPhone={whatsappSecondaryPhone}
+            primaryName={whatsappPrimaryName}
+            secondaryName={whatsappSecondaryName}
+            message={whatsappMessage}
+            className={styles.cta}
+            menuDirection="up"
+          >
+            {CTA_LABEL[locale]}
+          </WhatsAppButton>
+        </div>
       </div>
 
       {slides.length > 1 && (

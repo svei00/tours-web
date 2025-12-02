@@ -117,6 +117,23 @@
   width: fit-content;
 }
 
+/*
+ * `.content` es `flex-direction: column` sin `align-items` propio (default
+ * `stretch`), así que sin esto el `.wrap` interno de WhatsAppButton (el
+ * div que arma cuando hay dos números, para el selector) se estira al
+ * ancho completo de la columna. El botón visible adentro se queda con su
+ * tamaño normal, pero el menú del selector (`right: 0`, anclado contra
+ * ESE `.wrap` ya estirado) terminaba lejos a la derecha, desconectado del
+ * botón -- bug real reportado por Svei. `align-self: flex-start` vive
+ * aquí, en el wrapper LOCAL del Hero, no en whatsapp-button.module.css:
+ * ese archivo es compartido con el header y las barras fijas, y ahí
+ * `align-self` pisaría el centrado vertical que esos contenedores sí
+ * quieren (ver el comentario en whatsapp-button.module.css).
+ */
+.ctaWrap {
+  align-self: flex-start;
+}
+
 .dots {
   position: absolute;
   z-index: 3;

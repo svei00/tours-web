@@ -1,20 +1,19 @@
 /*
- * Bug reportado por Svei: en el Hero, el menú del selector (dos números)
- * se abría lejos a la derecha del botón, desconectado de él. La causa no
- * era el menú -- era este `.wrap`. El Hero mete el botón dentro de un
- * contenedor `flex-direction: column` que nunca fija `align-items`
- * (default `stretch`), así que `.wrap` se estiraba al ancho completo de
- * esa columna aunque el botón visible adentro se quedara con su tamaño
- * normal. El menú, anclado con `right: 0` contra ESE `.wrap` ya estirado
- * (no contra el botón), terminaba lejos a la derecha, fuera de la vista.
- * `align-self: flex-start` saca a `.wrap` del estiramiento sin importar
- * en qué tipo de contenedor flex viva -- vuelve a medir solo lo que mide
- * el botón, en cualquier página que use este componente.
+ * A propósito SIN `align-self` aquí. Un intento anterior le puso
+ * `align-self: flex-start` a este `.wrap` para arreglar el Hero (el
+ * selector de dos números se estiraba al ancho completo de la columna del
+ * Hero -- ver el fix de esa fecha), pero `align-self` pisa lo que sea que
+ * el contenedor haya pedido en las DOS direcciones según el eje: en el
+ * header, `.actions` pide `align-items: center` (fila, eje cruzado
+ * vertical) para centrar todo verticalmente, y `flex-start` aquí lo
+ * mandaba pegado arriba, desalineado del resto de los íconos. Ese arreglo
+ * ya no vive en este archivo compartido -- ahora es responsabilidad de
+ * quien use el componente envolverlo si su contenedor necesita evitar el
+ * estiramiento (ver `.ctaWrap` en hero-carousel.module.css).
  */
 .wrap {
   position: relative;
   display: inline-flex;
-  align-self: flex-start;
 }
 
 .menu {
