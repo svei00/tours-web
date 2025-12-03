@@ -2,16 +2,22 @@
 
 import { useState, type FocusEvent, type ReactNode } from 'react';
 
+import { trackWhatsAppClick } from '@/lib/analytics/events';
 import { buildWhatsAppUrl, formatPhoneDisplay } from '@/lib/whatsapp';
 
 import { Button } from './button';
 import styles from './whatsapp-button.module.css';
+
+type WhatsAppClickLocation = 'header' | 'hero' | 'drawer' | 'sticky' | 'detail' | 'footer' | 'coming_soon';
 
 type WhatsAppButtonProps = {
   phone: string | null | undefined;
   message: string;
   children: ReactNode;
   className?: string;
+  /** `whatsapp_click` (HANDOFF §10): en qué parte del sitio está este botón, y de qué tour si aplica. */
+  location: WhatsAppClickLocation;
+  tourName?: string;
   /** Segundo número opcional (siteSettings.whatsappSecondary) — si viene, el botón se vuelve un selector en vez de una liga directa. */
   secondaryPhone?: string | null | undefined;
   /** Nombres de quién atiende cada número (siteSettings.whatsapp{Primary,Secondary}Name), para el selector. */
@@ -52,6 +58,8 @@ export function WhatsAppButton({
   primaryName,
   secondaryName,
   menuDirection = 'down',
+  location,
+  tourName,
 }: WhatsAppButtonProps) {
   const [open, setOpen] = useState(false);
 
@@ -59,7 +67,14 @@ export function WhatsAppButton({
 
   if (!secondaryPhone) {
     return (
-      <Button href={buildWhatsAppUrl(phone, message)} variant="whatsapp" className={className} target="_blank" rel="noopener noreferrer">
+      <Button
+        href={buildWhatsAppUrl(phone, message)}
+        variant="whatsapp"
+        className={className}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackWhatsAppClick(location, tourName)}
+      >
         {children}
       </Button>
     );
@@ -99,7 +114,10 @@ export function WhatsAppButton({
             target="_blank"
             rel="noopener noreferrer"
             tabIndex={open ? 0 : -1}
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              trackWhatsAppClick(location, tourName);
+              setOpen(false);
+            }}
           >
             <span className={styles.optionName}>{name || formatPhoneDisplay(optionPhone)}</span>
             {name && <span className={styles.optionPhone}>{formatPhoneDisplay(optionPhone)}</span>}

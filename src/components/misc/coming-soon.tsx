@@ -61,6 +61,7 @@ export async function ComingSoon({ locale, title }: { locale: Locale; title: str
             secondaryName={siteSettings?.whatsappSecondaryName}
             message={copy.message}
             className={styles.cta}
+            location="coming_soon"
           >
             {copy.cta}
           </WhatsAppButton>

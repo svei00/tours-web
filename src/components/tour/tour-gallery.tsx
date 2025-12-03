@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 
 import { RichImage } from '@/components/ui/rich-image';
+import { trackGalleryOpen } from '@/lib/analytics/events';
 import type { Locale, RichImageValue } from '@/lib/sanity/types';
 
 import styles from './tour-gallery.module.css';
@@ -12,7 +13,7 @@ import styles from './tour-gallery.module.css';
  * con Escape gratis del navegador, sin librería de JS — el único JS de
  * cliente real de esta página es esto y la fachada de video (HANDOFF §9).
  */
-export function TourGallery({ images, locale }: { images: RichImageValue[]; locale: Locale }) {
+export function TourGallery({ images, locale, tourName }: { images: RichImageValue[]; locale: Locale; tourName: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -21,6 +22,7 @@ export function TourGallery({ images, locale }: { images: RichImageValue[]; loca
   const openAt = (index: number) => {
     setActiveIndex(index);
     dialogRef.current?.showModal();
+    trackGalleryOpen(tourName);
   };
 
   const goTo = (delta: number) => {

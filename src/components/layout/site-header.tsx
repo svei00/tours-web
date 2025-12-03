@@ -84,6 +84,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
                 secondaryName={siteSettings?.whatsappSecondaryName}
                 message={WHATSAPP_MESSAGE[locale]}
                 className={styles.whatsapp}
+                location="header"
               >
                 WhatsApp
               </WhatsAppButton>

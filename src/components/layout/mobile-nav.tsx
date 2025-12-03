@@ -76,6 +76,7 @@ export function MobileNav({
             secondaryName={whatsappSecondaryName}
             message={whatsappMessage}
             className={styles.whatsapp}
+            location="drawer"
           >
             {WHATSAPP_LABEL[locale]}
           </WhatsAppButton>

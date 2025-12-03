@@ -33,6 +33,7 @@ export function StickyWhatsAppBar({
         message={message}
         className={styles.button}
         menuDirection="up"
+        location="sticky"
       >
         Reservar por WhatsApp
       </WhatsAppButton>

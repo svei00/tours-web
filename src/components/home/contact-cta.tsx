@@ -38,6 +38,7 @@ export async function ContactCTA({ locale }: { locale: Locale }) {
             secondaryName={siteSettings?.whatsappSecondaryName}
             message={copy.message}
             className={styles.cta}
+            location="footer"
           >
             {copy.cta}
           </WhatsAppButton>

@@ -7,8 +7,10 @@ import { TourFacts } from '@/components/tour/tour-facts';
 import { TourGallery } from '@/components/tour/tour-gallery';
 import { TourHero } from '@/components/tour/tour-hero';
 import { TourVideos } from '@/components/tour/tour-videos';
+import { TourViewTracker } from '@/components/tour/tour-view-tracker';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
+import { ShareButtons } from '@/components/ui/share-buttons';
 import { JsonLd } from '@/components/seo/json-ld';
 import { breadcrumbListJsonLd, touristTripJsonLd } from '@/lib/seo/json-ld';
 import { buildAlternates, LOCALIZED_PATHS, ogImageUrl, SITE_URL } from '@/lib/seo/metadata';
@@ -56,25 +58,28 @@ export default async function TourDetailPage({ params }: PageProps) {
 
   const pageUrl = `${SITE_URL}/${typedLocale}/tours/${tourSlugFor(tour, typedLocale)}`;
   const toursListUrl = `${SITE_URL}/${typedLocale}${LOCALIZED_PATHS.tours[typedLocale]}`;
+  const tourName = localeValue(tour.title, typedLocale);
 
   return (
     <>
+      <TourViewTracker tourName={tourName} locale={typedLocale} />
       <JsonLd data={touristTripJsonLd(tour, typedLocale, pageUrl)} />
       <JsonLd
         data={breadcrumbListJsonLd([
           { name: BREADCRUMB_HOME[typedLocale], url: `${SITE_URL}/${typedLocale}` },
           { name: BREADCRUMB_TOURS[typedLocale], url: toursListUrl },
-          { name: localeValue(tour.title, typedLocale), url: pageUrl },
+          { name: tourName, url: pageUrl },
         ])}
       />
       <TourHero tour={tour} locale={typedLocale} />
       <Section>
         <Container>
           <div className={styles.main}>
-            <TourGallery images={tour.gallery} locale={typedLocale} />
+            <TourGallery images={tour.gallery} locale={typedLocale} tourName={tourName} />
             <TourDescription tour={tour} locale={typedLocale} />
+            <ShareButtons url={pageUrl} title={tourName} tourName={tourName} locale={typedLocale} />
             <TourFacts tour={tour} locale={typedLocale} />
-            <TourVideos videos={tour.videos} locale={typedLocale} />
+            <TourVideos videos={tour.videos} locale={typedLocale} tourName={tourName} />
           </div>
         </Container>
       </Section>

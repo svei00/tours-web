@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { trackVideoPlay } from '@/lib/analytics/events';
 import { localeValue, type Locale, type VideoEmbedValue } from '@/lib/sanity/types';
 
 import styles from './youtube-facade.module.css';
@@ -25,7 +26,8 @@ function extractYouTubeId(url: string): string | null {
  * descarga más de un megabyte antes de que el visitante decida siquiera
  * ver algo. Aquí solo se paga ese costo si de verdad le dan clic.
  */
-export function YouTubeFacade({ video, locale }: { video: VideoEmbedValue; locale: Locale }) {
+/** `tourName` es opcional -- VerticalVideoStrip del home reúsa videos de varios tours sin llevar el registro de a cuál pertenece cada uno (ver videos.ts), así que ahí cae al título propio del video para `video_play`. */
+export function YouTubeFacade({ video, locale, tourName }: { video: VideoEmbedValue; locale: Locale; tourName?: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoId = extractYouTubeId(video.youtubeUrl);
   if (!videoId) return null;
@@ -51,7 +53,10 @@ export function YouTubeFacade({ video, locale }: { video: VideoEmbedValue; local
     <button
       type="button"
       className={`${styles.wrapper} ${orientationClass} ${styles.facade}`}
-      onClick={() => setIsPlaying(true)}
+      onClick={() => {
+        setIsPlaying(true);
+        trackVideoPlay(tourName ?? title, video.orientation);
+      }}
       aria-label={`${locale === 'es' ? 'Reproducir' : 'Play'}: ${title}`}
     >
       <Image

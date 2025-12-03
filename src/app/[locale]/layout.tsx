@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
@@ -28,6 +29,15 @@ const STICKY_WHATSAPP_MESSAGE: Record<Locale, string> = {
   es: 'Hola, quiero información sobre los tours',
   en: 'Hi, I want information about the tours',
 };
+
+/**
+ * El cliente todavía no tiene cuenta de GA4 (HANDOFF §10 no lo marca como
+ * bloqueante, pero nadie la ha dado de alta todavía) -- sin esta variable
+ * en Vercel, el sitio simplemente no carga el script, en vez de tronar o
+ * mandar datos a una propiedad que no existe. `@next/third-parties` ya
+ * hace la carga diferida correcta de fábrica (HANDOFF §10).
+ */
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -116,6 +126,7 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
           message={STICKY_WHATSAPP_MESSAGE[typedLocale]}
         />
       </body>
+      {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
     </html>
   );
 }
