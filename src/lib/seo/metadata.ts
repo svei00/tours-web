@@ -70,6 +70,23 @@ export function comingSoonMetadata(title: string): Metadata {
   };
 }
 
+/**
+ * Mismo `noindex, follow` que `comingSoonMetadata`, pero para una razón
+ * distinta: /privacidad y /terminos (Fase I) ya tienen contenido real, no
+ * son el placeholder de ComingSoon -- lo que falta es que Svei o el
+ * cliente llenen los datos entre corchetes que el borrador de HANDOFF §15.5
+ * deja pendientes (razón social, domicilio fiscal, fecha de vigencia).
+ * Indexar un aviso de privacidad con placeholders visibles sería peor que
+ * no indexarlo. Nombre separado a propósito -- ver el comentario de
+ * `comingSoonMetadata` para el caso que sí es "no hay nada que mostrar".
+ */
+export function draftLegalMetadata(title: string): Metadata {
+  return {
+    title,
+    robots: { index: false, follow: true },
+  };
+}
+
 /** 1200×630 (HANDOFF §8) -- el tamaño estándar que Facebook/WhatsApp/Twitter esperan para no recortar la imagen al compartir. */
 export function ogImageUrl(image: RichImageValue | undefined): string | undefined {
   if (!image?.asset) return undefined;
