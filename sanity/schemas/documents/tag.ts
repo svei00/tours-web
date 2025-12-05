@@ -25,10 +25,12 @@ export const tag = defineType({
       type: 'localeString',
     }),
     defineField({
-      name: 'visible',
-      title: 'Mostrar en el sitio',
+      name: 'hidden',
+      title: 'Ocultar del sitio',
+      description:
+        'Déjalo en "No". Publicar ya pone la categoría en el sitio. Esto es solo para retirarla temporalmente sin borrarla ni despublicarla.',
       type: 'boolean',
-      initialValue: true,
+      initialValue: false,
     }),
   ],
   preview: {

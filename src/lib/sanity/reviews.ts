@@ -36,8 +36,8 @@ const REVIEW_PROJECTION = groq`{
  * site-header.tsx la consulta para eso.
  */
 export const REVIEW_STATS_QUERY = groq`{
-  "count": count(*[_type == "review" && visible == true]),
-  "ratings": *[_type == "review" && visible == true].rating
+  "count": count(*[_type == "review" && hidden != true]),
+  "ratings": *[_type == "review" && hidden != true].rating
 }`;
 
 export type ReviewStats = {
@@ -55,14 +55,14 @@ export const getReviewStats = cache(async (): Promise<ReviewStats> => {
 });
 
 /** Hasta 4 reseñas con `featured == true` para ReviewsBand del home — mismo trato que FEATURED_TOUR_QUERY en tours.ts. */
-export const FEATURED_REVIEWS_QUERY = groq`*[_type == "review" && visible == true && featured == true] | order(date desc) [0...4] ${REVIEW_PROJECTION}`;
+export const FEATURED_REVIEWS_QUERY = groq`*[_type == "review" && hidden != true && featured == true] | order(date desc) [0...4] ${REVIEW_PROJECTION}`;
 
 export const getFeaturedReviews = cache(async (): Promise<ReviewItem[]> => {
   return sanityClient.fetch<ReviewItem[]>(FEATURED_REVIEWS_QUERY);
 });
 
 /** Todas las reseñas visibles, para la página completa de /resenas. */
-export const ALL_REVIEWS_QUERY = groq`*[_type == "review" && visible == true] | order(date desc) ${REVIEW_PROJECTION}`;
+export const ALL_REVIEWS_QUERY = groq`*[_type == "review" && hidden != true] | order(date desc) ${REVIEW_PROJECTION}`;
 
 export const getVisibleReviews = cache(async (): Promise<ReviewItem[]> => {
   return sanityClient.fetch<ReviewItem[]>(ALL_REVIEWS_QUERY);

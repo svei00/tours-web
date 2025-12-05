@@ -49,8 +49,10 @@ export const promotion = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'visible',
-      title: 'Mostrar en el sitio',
+      name: 'hidden',
+      title: 'Ocultar del sitio',
+      description:
+        'Déjalo en "No". Publicar ya pone la promoción en el sitio (dentro de sus fechas). Esto es solo para retirarla antes de tiempo sin borrarla ni despublicarla.',
       type: 'boolean',
       initialValue: false,
     }),

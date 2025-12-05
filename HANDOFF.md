@@ -349,7 +349,7 @@ de un megabyte antes de que el visitante decida siquiera ver algo.
 | `whatsappMessage` | localeString | Autogenerado del título, editable |
 | `featured` | boolean | Elegible para el carrusel del home |
 | `displayOrder` | number | |
-| `visible` | boolean | **"Mostrar en el sitio"** |
+| `hidden` | boolean | **"Ocultar del sitio"** — default `No`; publicar ya basta |
 | `seo` | object | `metaTitle`, `metaDescription`, `ogImage` — todos opcionales |
 
 ### Documento: `review`
@@ -365,7 +365,7 @@ de un megabyte antes de que el visitante decida siquiera ver algo.
 | `language` | 'es' \| 'en' | Define el atributo `lang` del bloque |
 | `date` | date | |
 | `relatedTour` | reference → `tour` | Opcional |
-| `visible` | boolean | **"Mostrar en el sitio"** |
+| `hidden` | boolean | **"Ocultar del sitio"** — default `No`; publicar ya basta |
 | `featured` | boolean | Aparece en el home |
 
 > **El botón de traducir está DESACTIVADO en este tipo de documento.** Traducir el
@@ -394,7 +394,7 @@ verificación que vive dentro del CMS.
 ### Documento: `promotion`
 
 `title`, `description`, `badgeText`, `appliesTo` (referencias a tours, o todos),
-`startDate`, `endDate`, `visible`.
+`startDate`, `endDate`, `hidden`.
 
 **Las promociones se ocultan solas cuando pasa `endDate`.** Una "oferta por tiempo
 limitado" que sigue ahí ocho meses después destruye la confianza, y esperar que el
@@ -403,7 +403,7 @@ cliente se acuerde de quitarla es esperar demasiado.
 ### Documento: `tag`
 
 `name` (localeString), `slug`, `description` (localeString, para las páginas de
-categoría), `visible`.
+categoría), `hidden`.
 
 ### Singleton: `siteSettings` — el panel del cliente
 
@@ -467,9 +467,26 @@ inglés, marcándolo como `enIsMachineDraft: true`. El cliente puede editarlo o 
   `brand` deliberadamente ausente de esa estructura.
 - Previsualizaciones de documento con miniatura del hero y una insignia de
   visible/oculto, para poder escanear la lista y ver de inmediato qué está publicado.
-- El interruptor se llama **"Mostrar en el sitio: Sí / No"**, en lugar de depender del
-  draft/publish nativo de Sanity, que es un concepto más que el cliente tendría que
-  aprender.
+- **Publicar es la única acción que hace falta.** No hay segunda palanca que prender.
+
+> **REGLA DURA — publicar tiene que significar publicado.** Svei cargó el primer tour de
+> prueba completo (foto, galería, todo en regla) y lo publicó, pero no aparecía en el
+> sitio. Causa: el campo se llamaba `visible`, nacía en `false`, y todas las consultas
+> filtraban `visible == true` — así que Publicar guardaba un tour oculto. No fue caché ni
+> tiempo de espera; el dato decía `visible: false` de principio a fin.
+>
+> Documentarlo **no alcanzaba**: quien captura los tours es el cliente, y no puede
+> depender de acordarse de un segundo paso ni de llamarle a Svei cada vez.
+>
+> **Arreglo (Fase K):** el campo se invirtió. Ahora es `hidden` (default `false`) en
+> `tour`/`review`/`promotion`/`tag`, y las consultas filtran **`hidden != true`**.
+> Publicar basta. `hidden` queda solo como salida de emergencia para retirar algo sin
+> borrarlo ni despublicarlo — para "todavía no está listo" ya está el borrador de Sanity.
+>
+> **Si algún día se toca este filtro, tiene que ser `!= true`, nunca `== false`.** Un
+> documento que no tiene el campo cumple `hidden != true` pero NO cumple `hidden == false`
+> — esa es la propiedad que hizo que el cambio no necesitara migrar el dataset. Ver
+> NOTES.md, Fase K, con las cuatro consultas de verificación contra el dataset real.
 
 ---
 
@@ -866,7 +883,7 @@ Para esta audiencia va a rendir bastante más que el de Facebook, y es el mismo 
 
 ### sitemap.xml y robots.txt
 
-Generados desde Sanity: solo documentos con `visible: true`, ambos locales con sus
+Generados desde Sanity: solo documentos no ocultos (`hidden != true`), ambos locales con sus
 alternates. `/resenas` queda excluida cuando hay menos de seis reseñas visibles.
 
 ---

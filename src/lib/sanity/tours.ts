@@ -5,6 +5,20 @@ import { groq } from 'next-sanity';
 import { sanityClient } from './client';
 import type { TagRef, TourDetail, TourListItem } from './types';
 
+/**
+ * Por qué `hidden != true` y no `visible == true` en todos los filtros de
+ * abajo: publicar en el Studio tiene que bastar para que algo salga en el
+ * sitio. Con `visible == true` había una segunda palanca que el cliente no
+ * veía, así que publicaba un tour y no aparecía nunca (ver NOTES.md, Fase
+ * K). Ahora el default es mostrar y `hidden` es solo la salida de
+ * emergencia para retirar algo sin despublicarlo.
+ *
+ * `hidden != true` es a propósito, no `hidden == false`: en GROQ un
+ * documento que ni siquiera tiene el campo (todos los que ya existían
+ * antes de este cambio) cumple `!= true` pero NO cumple `== false`. Esa es
+ * justo la propiedad que hace que esto no necesite migrar el dataset.
+ */
+
 /** Proyección compartida — lo que necesita una TourCard, en el listado y en las páginas de categoría. */
 const TOUR_LIST_PROJECTION = groq`{
   _id,
@@ -17,21 +31,21 @@ const TOUR_LIST_PROJECTION = groq`{
   priceCurrency,
   priceUnit,
   durationHours,
-  "tags": tags[]->{ _id, name, "slug": slug.current },
+  "tags": coalesce(tags[]->{ _id, name, "slug": slug.current }, []),
   featured
 }`;
 
-export const TOUR_LIST_QUERY = groq`*[_type == "tour" && visible == true] | order(displayOrder asc) ${TOUR_LIST_PROJECTION}`;
+export const TOUR_LIST_QUERY = groq`*[_type == "tour" && hidden != true] | order(displayOrder asc) ${TOUR_LIST_PROJECTION}`;
 
-export const TOUR_LIST_BY_TAG_QUERY = groq`*[_type == "tour" && visible == true && $tagSlug in tags[]->slug.current] | order(displayOrder asc) ${TOUR_LIST_PROJECTION}`;
+export const TOUR_LIST_BY_TAG_QUERY = groq`*[_type == "tour" && hidden != true && $tagSlug in tags[]->slug.current] | order(displayOrder asc) ${TOUR_LIST_PROJECTION}`;
 
 /** Hasta 4 tours para FeaturedTours del home — dos filas de la asimetría 7/5 (HANDOFF §6). */
-export const FEATURED_TOUR_QUERY = groq`*[_type == "tour" && visible == true && featured == true] | order(displayOrder asc) [0...4] ${TOUR_LIST_PROJECTION}`;
+export const FEATURED_TOUR_QUERY = groq`*[_type == "tour" && hidden != true && featured == true] | order(displayOrder asc) [0...4] ${TOUR_LIST_PROJECTION}`;
 
 /** Para el "nº de tours" del trust strip — cuenta, no trae los documentos. */
-export const TOUR_COUNT_QUERY = groq`count(*[_type == "tour" && visible == true])`;
+export const TOUR_COUNT_QUERY = groq`count(*[_type == "tour" && hidden != true])`;
 
-export const TOUR_DETAIL_QUERY = groq`*[_type == "tour" && visible == true && (slugEs.current == $slug || slugEn.current == $slug)][0]{
+export const TOUR_DETAIL_QUERY = groq`*[_type == "tour" && hidden != true && (slugEs.current == $slug || slugEn.current == $slug)][0]{
   _id,
   title,
   shortDescription,
@@ -55,16 +69,16 @@ export const TOUR_DETAIL_QUERY = groq`*[_type == "tour" && visible == true && (s
   whatsappMessage,
   "slugEs": slugEs.current,
   "slugEn": slugEn.current,
-  "tags": tags[]->{ _id, name, "slug": slug.current },
+  "tags": coalesce(tags[]->{ _id, name, "slug": slug.current }, []),
   "operator": operator->{ name, showPublicly },
   featured
 }`;
 
-export const TAG_LIST_QUERY = groq`*[_type == "tag" && visible == true] | order(name.es asc) {
+export const TAG_LIST_QUERY = groq`*[_type == "tag" && hidden != true] | order(name.es asc) {
   _id, name, "slug": slug.current, description
 }`;
 
-export const TAG_BY_SLUG_QUERY = groq`*[_type == "tag" && slug.current == $slug && visible == true][0]{
+export const TAG_BY_SLUG_QUERY = groq`*[_type == "tag" && slug.current == $slug && hidden != true][0]{
   _id, name, "slug": slug.current, description
 }`;
 

@@ -1,3 +1,14 @@
+'use client';
+
+/**
+ * `'use client'` por el `loader={sanityImageLoader}` de abajo: una función
+ * no puede cruzar la frontera servidor→cliente, así que desde un Server
+ * Component (TourCard, TourHero) esto tronaba con "Functions cannot be
+ * passed directly to Client Components". Se marca este componente hoja —
+ * no se usa `images.loaderFile` global en next.config porque ese loader
+ * aplicaría también a las imágenes locales de /public, que sí queremos que
+ * pase por el optimizador de Next. Ver NOTES.md, Fase K.
+ */
 import Image from 'next/image';
 
 import { sanityImageLoader, urlForImage } from '@/lib/sanity/image-loader';

@@ -22,8 +22,8 @@ function localizedEntries(esPath: string, enPath: string): MetadataRoute.Sitemap
 }
 
 /**
- * HANDOFF §8: solo documentos con `visible: true` (getTourList/getTagList
- * ya filtran por eso), los dos locales con sus alternates, y /resenas
+ * HANDOFF §8: solo documentos no ocultos (getTourList/getTagList ya
+ * filtran por `hidden != true`), los dos locales con sus alternates, y /resenas
  * excluida mientras sigue sin reseñas de verdad. Nosotros/Contacto/
  * Privacidad/Términos se quedan FUERA a propósito -- siguen siendo el
  * placeholder de ComingSoon (mismo `noindex` que sus generateMetadata en

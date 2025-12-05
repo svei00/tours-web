@@ -82,8 +82,10 @@ export const review = defineType({
       to: [{ type: 'tour' }],
     }),
     defineField({
-      name: 'visible',
-      title: 'Mostrar en el sitio',
+      name: 'hidden',
+      title: 'Ocultar del sitio',
+      description:
+        'Déjalo en "No". Publicar ya pone la reseña en el sitio. Esto es solo para retirarla temporalmente sin borrarla ni despublicarla.',
       type: 'boolean',
       initialValue: false,
     }),
@@ -95,11 +97,11 @@ export const review = defineType({
     }),
   ],
   preview: {
-    select: { title: 'authorName', subtitle: 'quote', visible: 'visible' },
-    prepare({ title, subtitle, visible }) {
+    select: { title: 'authorName', subtitle: 'quote', hidden: 'hidden' },
+    prepare({ title, subtitle, hidden }) {
       return {
         title,
-        subtitle: visible ? subtitle : `(oculta) ${subtitle}`,
+        subtitle: hidden ? `⛔ (oculta) ${subtitle}` : subtitle,
       };
     },
   },

@@ -205,8 +205,10 @@ export const tour = defineType({
       type: 'number',
     }),
     defineField({
-      name: 'visible',
-      title: 'Mostrar en el sitio',
+      name: 'hidden',
+      title: 'Ocultar del sitio',
+      description:
+        'Déjalo en "No". Publicar ya pone el tour en el sitio. Esto es solo para retirar un tour temporalmente (fuera de temporada, operador caído) sin borrarlo ni despublicarlo.',
       type: 'boolean',
       initialValue: false,
     }),
@@ -222,11 +224,11 @@ export const tour = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title.es', media: 'heroImage', visible: 'visible' },
-    prepare({ title, media, visible }) {
+    select: { title: 'title.es', media: 'heroImage', hidden: 'hidden' },
+    prepare({ title, media, hidden }) {
       return {
         title: title || 'Sin título',
-        subtitle: visible ? 'Mostrando en el sitio' : 'Oculto',
+        subtitle: hidden ? '⛔ Oculto del sitio' : 'Se muestra al publicar',
         media,
       };
     },

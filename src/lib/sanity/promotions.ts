@@ -24,7 +24,7 @@ export type PromotionItem = {
  */
 export const ACTIVE_PROMOTIONS_QUERY = groq`*[
   _type == "promotion" &&
-  visible == true &&
+  hidden != true &&
   endDate >= $today &&
   (!defined(startDate) || startDate <= $today)
 ] | order(endDate asc) {
