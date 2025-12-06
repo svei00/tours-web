@@ -14,8 +14,10 @@ const TITLE: Record<Locale, string> = { es: 'Aviso de privacidad', en: 'Privacy 
 
 /**
  * Ya no es ComingSoon (Fase I) -- sigue con `noindex` porque el borrador de
- * HANDOFF §15.5 todavía trae campos entre corchetes sin llenar (razón
- * social, fecha de vigencia). Ver draftLegalMetadata para el porqué.
+ * HANDOFF §15.5 todavía trae campos entre corchetes sin llenar (fecha de
+ * vigencia, el plazo de respuesta ARCO). El responsable y el domicilio ya
+ * están confirmados con el cliente (ver RESPONSIBLE_NAME/RESPONSIBLE_ADDRESS
+ * abajo). Ver draftLegalMetadata para el porqué del noindex.
  */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -28,12 +30,23 @@ function Placeholder({ children }: { children: ReactNode }) {
   return <span className={styles.placeholder}>[{children}]</span>;
 }
 
-function formatAddress(address: SiteAddress | null, locale: Locale): ReactNode {
-  const hasStreetOrCity = Boolean(address?.street || address?.city);
-  if (!hasStreetOrCity) return <Placeholder>{locale === 'en' ? 'complete registered business address' : 'domicilio fiscal completo'}</Placeholder>;
+/**
+ * Datos reales que Svei confirmó con el cliente -- todavía a mano aquí, no
+ * en `siteSettings.address` de Sanity (ese campo sigue vacío, ver
+ * `formatAddress`). Cuando exista el documento de Sanity para las páginas
+ * legales (pendiente, el cliente decidió moverlas ahí), esto se reemplaza
+ * por datos leídos de Sanity en vez de estar escrito en el código.
+ */
+const RESPONSIBLE_NAME = 'José Sandoval Villarreal';
+const RESPONSIBLE_ADDRESS = 'Valle de Bravo 101, esquina con avenida Valle de México';
 
-  const parts = [address?.street, address?.city, address?.state, address?.postalCode, address?.country].filter(Boolean);
-  return parts.join(', ');
+function formatAddress(address: SiteAddress | null): ReactNode {
+  if (address?.street || address?.city) {
+    const parts = [address.street, address.city, address.state, address.postalCode, address.country].filter(Boolean);
+    return parts.join(', ');
+  }
+  // Sin domicilio en siteSettings todavía -- cae al que Svei confirmó a mano (ver arriba) en vez de a un placeholder.
+  return RESPONSIBLE_ADDRESS;
 }
 
 const DISCLAIMER: Record<Locale, string> = {
@@ -50,7 +63,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   const siteSettings = await getSiteSettings();
 
   const arcoEmail = siteSettings?.email ?? <Placeholder>{typedLocale === 'es' ? 'correo electrónico' : 'email address'}</Placeholder>;
-  const address = formatAddress(siteSettings?.address ?? null, typedLocale);
+  const address = formatAddress(siteSettings?.address ?? null);
 
   if (typedLocale === 'en') {
     return (
@@ -68,8 +81,8 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>1. Who is responsible for your data</h2>
               <p>
-                <Placeholder>legal business name</Placeholder>, doing business as {brand.businessName}, with address at {address}, is
-                responsible for the processing of your personal data.
+                {RESPONSIBLE_NAME}, doing business as {brand.businessName}, with address at {address}, is responsible for the
+                processing of your personal data.
               </p>
             </section>
             <section className={styles.section}>
@@ -139,8 +152,8 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>1. Responsable</h2>
             <p>
-              <Placeholder>Nombre legal completo (razón social)</Placeholder>, operando comercialmente como {brand.businessName}, con
-              domicilio en {address}, es responsable del tratamiento de sus datos personales.
+              {RESPONSIBLE_NAME}, operando comercialmente como {brand.businessName}, con domicilio en {address}, es responsable del
+              tratamiento de sus datos personales.
             </p>
           </section>
           <section className={styles.section}>

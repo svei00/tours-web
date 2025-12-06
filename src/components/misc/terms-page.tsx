@@ -11,7 +11,7 @@ import styles from './legal-page.module.css';
 
 const TITLE: Record<Locale, string> = { es: 'Términos y condiciones', en: 'Terms and conditions' };
 
-/** Igual que privacy-page.tsx: contenido real, `noindex` mientras los corchetes de política de negocio (anticipo, ventana de cancelación) sigan sin llenar. */
+/** Igual que privacy-page.tsx: contenido real, `noindex` mientras siga sin fecha de vigencia (la política de anticipo/cancelación ya está confirmada con el cliente). */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
@@ -23,8 +23,8 @@ function Placeholder({ children }: { children: ReactNode }) {
 }
 
 const DISCLAIMER: Record<Locale, string> = {
-  es: 'Este es un borrador estructural (HANDOFF §11), no asesoría legal. Los campos en corcheta color coral -- sobre todo política de anticipos y cancelaciones -- deben ser revisados y completados por el cliente o por Svei antes de publicar el sitio.',
-  en: 'This is a structural draft, not legal advice. The coral bracketed fields -- especially the deposit and cancellation policy -- must be reviewed and completed by the client or by Svei before the site goes live.',
+  es: 'Este es un borrador estructural (HANDOFF §11), no asesoría legal. La política de anticipos y cancelación ya está confirmada con el cliente. Solo falta la fecha de vigencia (campo en corcheta color coral) antes de publicar el sitio.',
+  en: 'This is a structural draft, not legal advice. The deposit and cancellation policy is already confirmed with the client. Only the effective date (coral bracketed field) is missing before the site goes live.',
 };
 
 const UPDATED_LABEL: Record<Locale, string> = { es: 'Última actualización: ', en: 'Last updated: ' };
@@ -65,18 +65,16 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>3. Payment and deposits</h2>
               <p>
-                <Placeholder>Accepted payment methods and, if applicable, the deposit amount or percentage required to hold a
-                booking</Placeholder>
-                .
+                Holding a booking requires a deposit. The amount varies by tour — we&apos;ll confirm the exact amount on WhatsApp when
+                you book. The deposit can be paid by bank transfer or in cash.
               </p>
             </section>
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>4. Cancellation policy</h2>
               <p>
-                <Placeholder>
-                  Cancellation window and refund terms if the customer cancels, and the customer&apos;s rights if the operator cancels
-                </Placeholder>
-                .
+                If you cancel at least 24 hours before the tour, we refund 50% of your deposit. If you cancel the same day as the
+                tour, no refund applies. This is because tour operators penalize us for cancelled spots that were already held and can
+                no longer be resold in time.
               </p>
             </section>
             <section className={styles.section}>
@@ -149,18 +147,16 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>3. Formas de pago y anticipos</h2>
             <p>
-              <Placeholder>Formas de pago aceptadas y, si aplica, el monto o porcentaje de anticipo necesario para apartar una
-              reserva</Placeholder>
-              .
+              Para apartar una reserva se deja un depósito. El monto varía según el tour — se lo confirmamos por WhatsApp al momento de
+              reservar. El depósito se puede pagar por transferencia bancaria o en efectivo.
             </p>
           </section>
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>4. Política de cancelación</h2>
             <p>
-              <Placeholder>
-                Ventana de tiempo y condiciones de reembolso si cancela el cliente, y los derechos del cliente si cancela el operador
-              </Placeholder>
-              .
+              Si cancela con al menos 24 horas de anticipación a la fecha del tour, se reembolsa el 50% del depósito. Si cancela el
+              mismo día del tour, no aplica reembolso. Esto se debe a que, al cancelar, los operadores turísticos nos aplican una
+              sanción por los cupos ya apartados que no se pueden revender a tiempo.
             </p>
           </section>
           <section className={styles.section}>

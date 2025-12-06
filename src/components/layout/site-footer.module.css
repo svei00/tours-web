@@ -5,6 +5,22 @@
   margin-top: auto;
 }
 
+/*
+ * Bug reportado por Svei: en móvil, la barra fija de WhatsApp
+ * (StickyWhatsAppBar o StickyBookingBar, `position:fixed; bottom:0`,
+ * ~72px de alto) se pinta ENCIMA del footer en vez de dejarle su propio
+ * espacio -- el copyright y a veces los links legales quedaban tapados a
+ * medias. Un padding-bottom extra aquí (no en <body>, para no afectar
+ * páginas sin footer visible) le da al contenido del footer aire real
+ * antes de que la barra fija lo cubra. 88px da margen cómodo sobre los
+ * ~72px medidos, sin depender de un número exacto.
+ */
+@media (max-width: 768px) {
+  .footer {
+    padding-bottom: calc(var(--space-16) + 88px);
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
