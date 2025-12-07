@@ -20,6 +20,7 @@
     "sanity": "^6.9.2"
   },
   "devDependencies": {
+    "@sanity/client": "^7.26.2",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
