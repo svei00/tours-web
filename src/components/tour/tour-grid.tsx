@@ -12,8 +12,8 @@ import { TourCard } from './tour-card';
 export function TourGrid({ tours, locale }: { tours: TourListItem[]; locale: Locale }) {
   return (
     <div className={styles.grid}>
-      {tours.map((tour) => (
-        <TourCard key={tour._id} tour={tour} locale={locale} />
+      {tours.map((tour, index) => (
+        <TourCard key={tour._id} tour={tour} locale={locale} priority={index === 0} />
       ))}
     </div>
   );

@@ -13,7 +13,15 @@ function formatPrice(amount: number, currency: string, locale: Locale): string {
   }).format(amount);
 }
 
-export function TourCard({ tour, locale }: { tour: TourListItem; locale: Locale }) {
+/**
+ * `priority` (HANDOFF §9, Fase J -- bug real que encontró Lighthouse): sin
+ * esto, la primera tarjeta de `/tours` -- la que casi siempre ES el LCP de
+ * esa página -- cargaba con `loading="lazy"` como cualquier otra tarjeta
+ * más abajo en la retícula. El navegador la posponía igual que a las de
+ * fuera de pantalla, aunque estuviera arriba del todo. `TourGrid` pasa
+ * `true` solo en la primera.
+ */
+export function TourCard({ tour, locale, priority }: { tour: TourListItem; locale: Locale; priority?: boolean }) {
   const slug = tourSlugFor(tour, locale);
   const title = localeValue(tour.title, locale);
   const description = localeValue(tour.shortDescription, locale);
@@ -26,6 +34,7 @@ export function TourCard({ tour, locale }: { tour: TourListItem; locale: Locale 
           image={tour.heroImage}
           locale={locale}
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          priority={priority}
         />
       </div>
       <div className={styles.body}>
