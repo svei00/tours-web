@@ -1,16 +1,31 @@
 /**
- * Glifos a mano en `currentColor`, mismo criterio que WhatsAppIcon en
- * button.tsx: nada de librería de íconos, y así heredan el color/hover
- * de quien los use sin CSS extra. Solo los cuatro que siteSettings ya
- * modela (facebookUrl, instagramUrl, tiktokUrl, youtubeUrl) -- el Perfil
- * de Google se queda como liga de texto, no es una red social.
+ * Glifos a mano, nada de librería de íconos (mismo criterio que
+ * WhatsAppIcon en button.tsx). Solo los cuatro que siteSettings ya modela
+ * (facebookUrl, instagramUrl, tiktokUrl, youtubeUrl) -- el Perfil de
+ * Google se queda como liga de texto, no es una red social.
+ *
+ * Facebook y YouTube van en su color oficial fijo (feedback de Svei: se
+ * pierden con el resto del texto del footer si heredan `currentColor`).
+ * Instagram y TikTok se quedan en `currentColor` -- Instagram no tiene un
+ * solo color de marca real (su gradiente no se puede replicar con un
+ * SVG de un solo `fill`), y el logo de TikTok en un solo color pierde el
+ * splitting cian/rojo que lo hace reconocible -- para los dos, heredar el
+ * color del texto del link se ve mejor que forzar una aproximación.
  */
 
 type IconProps = { size?: number };
 
+/**
+ * `fill` a un hex fijo, no `currentColor` -- a diferencia de Instagram/
+ * TikTok (que sí heredan el color del link y cambian en hover), el color
+ * de marca de Facebook/YouTube es parte de reconocer el ícono, así que se
+ * queda igual sin importar hover ni dónde se use (mismo criterio que el
+ * verde de WhatsApp en button.tsx, reservado y fijo). `#1877F2` es el azul
+ * oficial de Facebook.
+ */
 export function FacebookIcon({ size = 20 }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="#1877F2" aria-hidden="true">
       <path d="M15.117 3H13.5C11.015 3 9 5.015 9 7.5V9.75H6.75a.375.375 0 0 0-.375.375v3a.375.375 0 0 0 .375.375H9V21h3.75v-7.5h2.273a.375.375 0 0 0 .372-.325l.375-3a.375.375 0 0 0-.372-.425H12.75V7.5c0-.621.504-1.125 1.125-1.125h1.242a.375.375 0 0 0 .375-.375V3.375A.375.375 0 0 0 15.117 3Z" />
     </svg>
   );
@@ -34,9 +49,10 @@ export function TiktokIcon({ size = 20 }: IconProps) {
   );
 }
 
+/** Mismo criterio que FacebookIcon arriba -- `#FF0000` es el rojo oficial de YouTube, fijo, no heredado. */
 export function YoutubeIcon({ size = 20 }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="#FF0000" aria-hidden="true">
       <path d="M21.6 7.7a2.7 2.7 0 0 0-1.9-1.92C18.05 5.3 12 5.3 12 5.3s-6.05 0-7.7.48A2.7 2.7 0 0 0 2.4 7.7 28.3 28.3 0 0 0 1.9 12a28.3 28.3 0 0 0 .5 4.3 2.7 2.7 0 0 0 1.9 1.92c1.65.48 7.7.48 7.7.48s6.05 0 7.7-.48a2.7 2.7 0 0 0 1.9-1.92 28.3 28.3 0 0 0 .5-4.3 28.3 28.3 0 0 0-.5-4.3ZM9.9 15.02V8.98L15.4 12l-5.5 3.02Z" />
     </svg>
   );
