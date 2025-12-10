@@ -4,13 +4,15 @@
  * (facebookUrl, instagramUrl, tiktokUrl, youtubeUrl) -- el Perfil de
  * Google se queda como liga de texto, no es una red social.
  *
- * Facebook y YouTube van en su color oficial fijo (feedback de Svei: se
- * pierden con el resto del texto del footer si heredan `currentColor`).
- * Instagram y TikTok se quedan en `currentColor` -- Instagram no tiene un
- * solo color de marca real (su gradiente no se puede replicar con un
- * SVG de un solo `fill`), y el logo de TikTok en un solo color pierde el
- * splitting cian/rojo que lo hace reconocible -- para los dos, heredar el
- * color del texto del link se ve mejor que forzar una aproximación.
+ * Los cuatro van en color de marca fijo, no en `currentColor` -- mismo
+ * criterio que el verde de WhatsApp en button.tsx: son íconos de
+ * reconocimiento de marca, no texto, así que no deben decolorarse ni
+ * cambiar en hover. Facebook y YouTube son un solo `fill` plano.
+ * Instagram y TikTok sí se pueden replicar de verdad en SVG (un
+ * `<radialGradient>` para el degradado de Instagram, y tres copias
+ * superpuestas del glifo de nota para el efecto cian/rojo de TikTok) --
+ * antes se habían dejado en `currentColor` como aproximación de
+ * conveniencia, pero un SVG de verdad soporta ambos casos sin librería.
  */
 
 type IconProps = { size?: number };
@@ -31,20 +33,49 @@ export function FacebookIcon({ size = 20 }: IconProps) {
   );
 }
 
+/**
+ * Degradado real de Instagram (aproximación estándar de sus cuatro tonos
+ * oficiales: amarillo -> naranja -> magenta -> morado/azul), como fondo
+ * circular con el glifo de cámara en blanco encima -- el mismo look que
+ * el ícono oficial de la app, no la aproximación de un solo trazo.
+ */
 export function InstagramIcon({ size = 20 }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-      <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <defs>
+        <radialGradient id="instagram-gradient" cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stopColor="#FED576" />
+          <stop offset="26%" stopColor="#F47133" />
+          <stop offset="61%" stopColor="#BC3081" />
+          <stop offset="100%" stopColor="#4C63D2" />
+        </radialGradient>
+      </defs>
+      <circle cx="12" cy="12" r="12" fill="url(#instagram-gradient)" />
+      <rect x="6.7" y="6.7" width="10.6" height="10.6" rx="3.2" fill="none" stroke="#FFFFFF" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="3" fill="none" stroke="#FFFFFF" strokeWidth="1.5" />
+      <circle cx="15.4" cy="8.6" r="0.9" fill="#FFFFFF" />
     </svg>
   );
 }
 
+/**
+ * El efecto de marca de TikTok no es un degradado sino tres copias del
+ * mismo glifo de nota, desfasadas en cian y rojo detrás de una copia
+ * blanca al frente -- así es como se logra el "glitch" reconocible.
+ * Fondo circular negro (el que usa TikTok en contextos de ícono de app)
+ * para que las tres capas tengan de dónde despegarse.
+ */
 export function TiktokIcon({ size = 20 }: IconProps) {
+  const notePath =
+    'M16.5 3h-2.75v11.9a2.6 2.6 0 1 1-1.9-2.505v-2.79a5.4 5.4 0 1 0 4.65 5.35V9.03a6.9 6.9 0 0 0 4 1.28V7.56a4.15 4.15 0 0 1-3.16-1.44A4.14 4.14 0 0 1 16.5 3Z';
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
-      <path d="M16.5 3h-2.75v11.9a2.6 2.6 0 1 1-1.9-2.505v-2.79a5.4 5.4 0 1 0 4.65 5.35V9.03a6.9 6.9 0 0 0 4 1.28V7.56a4.15 4.15 0 0 1-3.16-1.44A4.14 4.14 0 0 1 16.5 3Z" />
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <circle cx="12" cy="12" r="12" fill="#000000" />
+      <g transform="translate(12 12) scale(0.62) translate(-12 -12)">
+        <path d={notePath} fill="#25F4EE" transform="translate(-0.9 -0.6)" />
+        <path d={notePath} fill="#FE2C55" transform="translate(0.9 0.6)" />
+        <path d={notePath} fill="#FFFFFF" />
+      </g>
     </svg>
   );
 }
