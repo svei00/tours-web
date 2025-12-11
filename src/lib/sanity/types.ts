@@ -80,6 +80,26 @@ export type TourDetail = TourListItem & {
   operator?: { name: string; showPublicly: boolean } | null;
 };
 
+export type LegalSection = {
+  heading: LocaleString;
+  body: LocaleBlockValue;
+};
+
+/** `updatedAt: null` es la señal de "todavía borrador" que leen /privacidad y /terminos (ver esos schemas de Sanity para el porqué). */
+export type LegalPageDoc = {
+  updatedAt: string | null;
+  sections: LegalSection[];
+};
+
+export type AboutPageDoc = {
+  lead: LocaleText | null;
+  body: LocaleBlockValue | null;
+};
+
+export type ContactPageDoc = {
+  intro: LocaleText | null;
+};
+
 /** Toma el español y cae de vuelta a él si el inglés está vacío (HANDOFF §5, regla 2). */
 export function localeValue(value: LocaleString | LocaleText | undefined, locale: Locale): string {
   if (!value) return '';

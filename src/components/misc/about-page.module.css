@@ -1,0 +1,29 @@
+.header {
+  max-width: 720px;
+  margin-bottom: var(--space-8);
+}
+
+.title {
+  font-size: var(--font-size-h1);
+}
+
+.lead {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-h3);
+  font-family: var(--font-headline);
+  color: var(--color-primary-600);
+  max-width: 640px;
+}
+
+.body {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.body p {
+  font-size: var(--font-size-bodyLg);
+  line-height: 1.7;
+  color: var(--color-ink);
+}

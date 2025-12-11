@@ -1,208 +1,83 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 
 import { Container } from '@/components/ui/container';
+import { Prose } from '@/components/ui/prose';
 import { Section } from '@/components/ui/section';
-import { brand } from '@/config/brand';
 import { buildAlternates, draftLegalMetadata, LOCALIZED_PATHS } from '@/lib/seo/metadata';
-import { getSiteSettings, type SiteAddress } from '@/lib/sanity/queries';
-import type { Locale } from '@/lib/sanity/types';
+import { getLegalPrivacy } from '@/lib/sanity/legal';
+import { localeValue, type Locale } from '@/lib/sanity/types';
 
 import styles from './legal-page.module.css';
 
 const TITLE: Record<Locale, string> = { es: 'Aviso de privacidad', en: 'Privacy notice' };
 
+const DISCLAIMER: Record<Locale, string> = {
+  es: 'Este es un borrador. Falta que Svei o el cliente confirmen la fecha de vigencia (y cualquier campo entre corchetes dentro del texto) antes de publicar el sitio.',
+  en: 'This is a draft. Svei or the client still need to confirm the effective date (and any bracketed field inside the text) before the site goes live.',
+};
+
+const NO_CONTENT: Record<Locale, string> = {
+  es: 'Todavía no hay contenido cargado para esta página en el Studio.',
+  en: 'No content has been loaded for this page in the Studio yet.',
+};
+
+const UPDATED_LABEL: Record<Locale, string> = { es: 'Última actualización: ', en: 'Last updated: ' };
+
+function formatDate(isoDate: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'es-MX', { dateStyle: 'long' }).format(new Date(`${isoDate}T00:00:00`));
+}
+
 /**
- * Ya no es ComingSoon (Fase I) -- sigue con `noindex` porque el borrador de
- * HANDOFF §15.5 todavía trae campos entre corchetes sin llenar (fecha de
- * vigencia, el plazo de respuesta ARCO). El responsable y el domicilio ya
- * están confirmados con el cliente (ver RESPONSIBLE_NAME/RESPONSIBLE_ADDRESS
- * abajo). Ver draftLegalMetadata para el porqué del noindex.
+ * `updatedAt` vacío en Sanity es la señal de "todavía borrador" (ver
+ * sanity/schemas/documents/legal-privacy.ts) -- mismo criterio de un solo
+ * campo decisivo que `hidden` en tour/review (Fase K). Mientras esté
+ * vacío: `noindex` + aviso de borrador visible. En cuanto Svei o el cliente
+ * lo llenen y publiquen, la página se indexa sola, sin tocar código.
  */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  return { ...draftLegalMetadata(TITLE[typedLocale]), alternates: buildAlternates(typedLocale, LOCALIZED_PATHS.privacy.es, LOCALIZED_PATHS.privacy.en) };
+  const doc = await getLegalPrivacy();
+  const alternates = buildAlternates(typedLocale, LOCALIZED_PATHS.privacy.es, LOCALIZED_PATHS.privacy.en);
+
+  if (doc?.updatedAt) return { title: TITLE[typedLocale], alternates };
+  return { ...draftLegalMetadata(TITLE[typedLocale]), alternates };
 }
-
-/** Envuelve en corchetes y en coral -- mismo formato que el borrador de HANDOFF §15.5, para que sea obvio de un vistazo qué falta llenar. */
-function Placeholder({ children }: { children: ReactNode }) {
-  return <span className={styles.placeholder}>[{children}]</span>;
-}
-
-/**
- * Datos reales que Svei confirmó con el cliente -- todavía a mano aquí, no
- * en `siteSettings.address` de Sanity (ese campo sigue vacío, ver
- * `formatAddress`). Cuando exista el documento de Sanity para las páginas
- * legales (pendiente, el cliente decidió moverlas ahí), esto se reemplaza
- * por datos leídos de Sanity en vez de estar escrito en el código.
- */
-const RESPONSIBLE_NAME = 'José Sandoval Villarreal';
-const RESPONSIBLE_ADDRESS = 'Valle de Bravo 101, esquina con avenida Valle de México';
-
-function formatAddress(address: SiteAddress | null): ReactNode {
-  if (address?.street || address?.city) {
-    const parts = [address.street, address.city, address.state, address.postalCode, address.country].filter(Boolean);
-    return parts.join(', ');
-  }
-  // Sin domicilio en siteSettings todavía -- cae al que Svei confirmó a mano (ver arriba) en vez de a un placeholder.
-  return RESPONSIBLE_ADDRESS;
-}
-
-const DISCLAIMER: Record<Locale, string> = {
-  es: 'Este es un borrador estructural (HANDOFF §15.5), no asesoría legal. Los campos en corcheta color coral deben ser revisados y completados por el cliente o por Svei antes de publicar el sitio.',
-  en: 'This is a structural draft, not legal advice. The coral bracketed fields must be reviewed and completed by the client or by Svei before the site goes live.',
-};
-
-const UPDATED_LABEL: Record<Locale, string> = { es: 'Última actualización: ', en: 'Last updated: ' };
 
 /** Compartido por /privacidad y /privacy. */
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const typedLocale = locale as Locale;
-  const siteSettings = await getSiteSettings();
-
-  const arcoEmail = siteSettings?.email ?? <Placeholder>{typedLocale === 'es' ? 'correo electrónico' : 'email address'}</Placeholder>;
-  const address = formatAddress(siteSettings?.address ?? null);
-
-  if (typedLocale === 'en') {
-    return (
-      <Section>
-        <Container>
-          <header className={styles.header}>
-            <h1 className={styles.title}>{TITLE.en}</h1>
-            <p className={styles.updated}>
-              {UPDATED_LABEL.en}
-              <Placeholder>date</Placeholder>
-            </p>
-            <p className={styles.disclaimer}>{DISCLAIMER.en}</p>
-          </header>
-          <div className={styles.content}>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>1. Who is responsible for your data</h2>
-              <p>
-                {RESPONSIBLE_NAME}, doing business as {brand.businessName}, with address at {address}, is responsible for the
-                processing of your personal data.
-              </p>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>2. Data we collect</h2>
-              <p>
-                When you contact us by WhatsApp, phone, or email, we may collect: your name, phone number, email address, and booking
-                details (date, number of people, tour of interest). Our website also collects browsing data through analytics tools
-                (pages visited, time on site, traffic source).
-              </p>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>3. Purposes</h2>
-              <p>Primary (necessary to serve you):</p>
-              <ul>
-                <li>Responding to your request for information</li>
-                <li>Managing and confirming your booking</li>
-                <li>Coordinating with the operator that runs the tour</li>
-              </ul>
-              <p>Secondary (you may opt out):</p>
-              <ul>
-                <li>Sending you promotions and offers</li>
-              </ul>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>4. Data sharing</h2>
-              <p>
-                To provide the service you booked, we share your booking data with the tour operators who actually run each experience.
-                This sharing is necessary to deliver the service.
-              </p>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>5. Your rights (access, rectification, cancellation, objection)</h2>
-              <p>
-                You may request access to, correction of, deletion of, or objection to the processing of your personal data by writing
-                to {arcoEmail}. We will respond within a maximum of <Placeholder>20</Placeholder> business days.
-              </p>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>6. Cookies and tracking</h2>
-              <p>
-                This site uses Google Analytics cookies to measure traffic. You can disable them from your browser settings. Contacting
-                us on WhatsApp starts a conversation on a third-party platform subject to its own policies.
-              </p>
-            </section>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>7. Changes to this notice</h2>
-              <p>Any change to this notice will be published on this same page.</p>
-            </section>
-          </div>
-        </Container>
-      </Section>
-    );
-  }
+  const doc = await getLegalPrivacy();
 
   return (
     <Section>
       <Container>
         <header className={styles.header}>
-          <h1 className={styles.title}>{TITLE.es}</h1>
-          <p className={styles.updated}>
-            {UPDATED_LABEL.es}
-            <Placeholder>fecha</Placeholder>
-          </p>
-          <p className={styles.disclaimer}>{DISCLAIMER.es}</p>
+          <h1 className={styles.title}>{TITLE[typedLocale]}</h1>
+          {doc?.updatedAt && (
+            <p className={styles.updated}>
+              {UPDATED_LABEL[typedLocale]}
+              {formatDate(doc.updatedAt, typedLocale)}
+            </p>
+          )}
+          {!doc?.updatedAt && <p className={styles.disclaimer}>{DISCLAIMER[typedLocale]}</p>}
         </header>
-        <div className={styles.content}>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>1. Responsable</h2>
-            <p>
-              {RESPONSIBLE_NAME}, operando comercialmente como {brand.businessName}, con domicilio en {address}, es responsable del
-              tratamiento de sus datos personales.
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>2. Datos que recabamos</h2>
-            <p>
-              Cuando usted nos contacta por WhatsApp, teléfono o correo, podemos recabar: nombre, número telefónico, correo electrónico,
-              y los datos de la reserva (fecha, número de personas, tour de interés). Adicionalmente, nuestro sitio web recaba datos de
-              navegación mediante herramientas de analítica (páginas visitadas, tiempo de permanencia, origen del tráfico).
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>3. Finalidades</h2>
-            <p>Primarias (necesarias):</p>
-            <ul>
-              <li>Atender su solicitud de información</li>
-              <li>Gestionar y confirmar su reserva</li>
-              <li>Coordinar con el operador que presta el servicio</li>
-            </ul>
-            <p>Secundarias (puede oponerse):</p>
-            <ul>
-              <li>Enviarle promociones y ofertas</li>
-            </ul>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>4. Transferencias</h2>
-            <p>
-              Para prestar el servicio contratado transferimos sus datos de reserva a los operadores turísticos que ejecutan cada tour.
-              Esta transferencia es necesaria para la prestación del servicio.
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>5. Derechos ARCO</h2>
-            <p>
-              Usted puede solicitar el Acceso, Rectificación, Cancelación u Oposición al tratamiento de sus datos escribiendo a{' '}
-              {arcoEmail}. Responderemos en un plazo máximo de <Placeholder>20</Placeholder> días hábiles.
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>6. Cookies y rastreo</h2>
-            <p>
-              Este sitio utiliza cookies de Google Analytics para medir el tráfico. Puede deshabilitarlas desde la configuración de su
-              navegador. Contactarnos por WhatsApp inicia una conversación en una plataforma de terceros sujeta a sus propias políticas.
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>7. Cambios al aviso</h2>
-            <p>Cualquier cambio a este aviso se publicará en esta misma página.</p>
-          </section>
-        </div>
+
+        {doc?.sections && doc.sections.length > 0 ? (
+          <div className={styles.content}>
+            {doc.sections.map((section, index) => (
+              <section key={index} className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {index + 1}. {localeValue(section.heading, typedLocale)}
+                </h2>
+                <Prose value={typedLocale === 'en' && section.body.en ? section.body.en : section.body.es} />
+              </section>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.disclaimer}>{NO_CONTENT[typedLocale]}</p>
+        )}
       </Container>
     </Section>
   );
