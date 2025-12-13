@@ -65,7 +65,20 @@ export function TourGallery({ images, locale, tourName }: { images: RichImageVal
             ‹
           </button>
           <div className={styles.imageStage}>
-            <RichImage image={images[activeIndex]} locale={locale} sizes="100vw" priority />
+            {/*
+              Sin `priority` a propósito (HANDOFF §9 -- LCP del detalle de
+              tour venía saliendo apenas arriba del presupuesto de 2.0s):
+              este `<dialog>` empieza cerrado (`display: none` de fábrica,
+              no hay `open`), pero `priority` en next/image inyecta un
+              `<link rel="preload">` en el <head> en el momento del render
+              sin importar si el elemento se ve o no -- así que la imagen
+              de `images[0]` se precargaba a la misma prioridad que el
+              hero de verdad (TourHero) en cada visita, peleándole ancho de
+              banda aunque el lightbox nunca se llegara a abrir. Sin
+              `priority`, el `loading="lazy"` de default de next/image no
+              dispara la carga mientras el `<dialog>` sigue oculto.
+            */}
+            <RichImage image={images[activeIndex]} locale={locale} sizes="100vw" />
           </div>
           <button
             type="button"
