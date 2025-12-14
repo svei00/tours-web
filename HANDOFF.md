@@ -338,7 +338,8 @@ de un megabyte antes de que el visitante decida siquiera ver algo.
 | `durationHours` | number | |
 | `departureTimes` | string | |
 | `meetingPoint` | localeString | |
-| `meetingPointMapUrl` | url | Liga a Google Maps |
+| `meetingPointMapUrl` | url | Liga a Google Maps — abre Maps, **no** se puede embeber |
+| `meetingPointMapEmbed` | text | Opcional. El `<iframe>` de "Insertar un mapa" para ver el punto de encuentro sin salir del sitio. Ver §8, "El mapa" |
 | `includes` | localeString[] | Qué incluye |
 | `excludes` | localeString[] | Qué no incluye |
 | `whatToBring` | localeString[] | Qué llevar |
@@ -417,6 +418,59 @@ categoría), `hidden`.
 - `heroSlides` (richImage[], máximo 5)
 - `reviewsSectionVisible` (boolean) — interruptor de la sección completa
 - `defaultSeo`
+- **Mapa:** `mapEmbed` (text) — ver §8, "El mapa". El cliente pega el `<iframe>` completo
+  que le da Google Maps en **Compartir → Insertar un mapa → Copiar HTML**. El código
+  extrae el `src` y valida el prefijo `https://www.google.com/maps/embed`; nunca renderiza
+  el HTML pegado. Opcional: si está vacío, la fachada cae a `address.geo`.
+
+### Singletons de página — contenido editable de las páginas sueltas
+
+Estos cuatro salieron de una decisión explícita del cliente: **poder editar el texto de
+estas páginas sin depender de un cambio de código.** Antes vivían escritos a mano en
+componentes de React.
+
+**`legalPrivacy` y `legalTerms`** — aviso de privacidad y términos (§11).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `updatedAt` | date | **El interruptor.** Vacío = la página se queda en `noindex` y muestra el aviso de borrador; lleno = se indexa sola y entra al sitemap. Sin segundo paso, misma filosofía que `hidden` |
+| `sections` | `legalSection[]` | Mínimo 1 |
+
+`legalSection` es un objeto: `heading` (localeString) + `body` (localeBlock). **La
+numeración no se guarda** — "1.", "2." se calculan por la posición en el arreglo al
+renderizar, para que el cliente pueda reordenar secciones sin reescribir números a mano.
+
+**`aboutPage`** — /nosotros y /about.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `lead` | localeText | La línea corta bajo el título — una idea, no un párrafo |
+| `body` | localeBlock | La historia de curaduría del bróker |
+| `image` | richImage | **Opcional.** Mínimo 1600px lado largo. Ver abajo |
+
+> **Sobre `image`:** Svei preguntó si el espacio a la derecha estaba vacío a propósito.
+> Estaba: el texto va limitado a 720px por *medida tipográfica* (una línea de más de ~75
+> caracteres se lee peor), no por descuido, y §3 principio 10 dice que el espacio en
+> blanco es material. Pero una foto real ahí es mejor que espacio vacío, así que el campo
+> se agrega **opcional**: si está, la página pasa a dos columnas; si no, se queda
+> exactamente como hoy.
+>
+> **La descripción del campo en el Studio debe pedir una fotografía, no el logo** — el
+> logo ya aparece en el encabezado y el pie de **todas** las páginas, y ponerlo una
+> tercera vez en el cuerpo se lee como relleno. Una foto del equipo, de la lancha o de la
+> bahía cuenta la historia de curaduría de §1; el logo no cuenta nada. La validación es
+> de resolución, no de contenido — si el cliente insiste en un logo en alta resolución,
+> pasa. La descripción guía, no bloquea.
+
+**`contactPage`** — /contacto y /contact.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `intro` | localeText | Invita a escribir por WhatsApp |
+
+**Sin formulario de contacto — el cliente lo rechazó explícitamente.** La conversión es
+por WhatsApp (§1). Los datos de contacto (teléfonos, correo, dirección, horario, mapa)
+**no se duplican aquí**: se leen de `siteSettings`, que es su único dueño.
 
 ### Singleton: `brand` — el panel de Svei, no anunciado al cliente
 
@@ -634,8 +688,42 @@ Home
 
 Primitivos
 Button · Badge · Section · Container · Heading · Prose · RichImage
-YouTubeFacade · Rating · LocaleLink · LanguageSwitcher · Reveal · ShareButtons
+YouTubeFacade · MapFacade · Rating · LocaleLink · LanguageSwitcher · Reveal · ShareButtons
+
+/nosotros · /about
+└── AboutPage — dos columnas SOLO si aboutPage.image existe
+
+/contacto · /contact
+├── ContactPage — intro + tarjeta de datos (de siteSettings)
+└── MapFacade — ubicación del negocio
 ```
+
+### `MapFacade` — el contrato del componente
+
+Un solo componente para los dos usos (contacto y punto de encuentro). Ver §8, "El mapa",
+para el razonamiento completo.
+
+```
+MapFacade({
+  embedHtml?: string    // lo que pegó el cliente; se extrae y valida el src
+  geo?: { lat, lng }    // respaldo cuando no hay embedHtml
+  externalUrl?: string  // "Abrir en Google Maps"; si falta se arma con geo
+  label: string         // dirección o punto de encuentro, en texto
+  locale: Locale
+})
+```
+
+- Si no hay `embedHtml` **ni** `geo`, **no renderiza el mapa** — solo el texto y la liga
+  externa si existe. Nunca un recuadro roto ni un mapa de un lugar equivocado.
+- El iframe se monta solo tras el clic. Bajo `prefers-reduced-motion` no hay transición
+  de aparición, pero el mapa **sí** se monta: es función, no adorno.
+
+### Layout de /nosotros con imagen
+
+**Nunca 50/50.** Una retícula partida por la mitad es exactamente la señal de "generado"
+de §3 principio 2. Se usa el mismo criterio de asimetría del home: **7 columnas de texto
+· 5 de imagen** en escritorio (≥900px), apiladas a ancho completo abajo de eso, con el
+texto primero en el DOM en los dos casos.
 
 ---
 
@@ -869,6 +957,77 @@ Graph correctas.
 **Agregar también un botón de compartir por WhatsApp** (`https://wa.me/?text={texto+url}`).
 Para esta audiencia va a rendir bastante más que el de Facebook, y es el mismo trabajo.
 
+#### Qué redes SÍ se pueden agregar, y cuáles no — decidido con la razón técnica
+
+Svei pidió agregar Instagram, TikTok y X. La respuesta honesta es que **no todas las
+redes se pueden compartir igual**, y fingir que sí produce botones rotos:
+
+| Red | ¿Se puede? | Mecanismo |
+|---|---|---|
+| Facebook | Sí | `https://www.facebook.com/sharer/sharer.php?u={url}` |
+| WhatsApp | Sí | `https://wa.me/?text={texto+url}` |
+| **X (antes Twitter)** | **Sí** | `https://x.com/intent/post?url={url}&text={texto}` |
+| Correo | Sí | `mailto:?subject={título}&body={texto+url}` |
+| **Instagram** | **No existe** | Ver abajo |
+| **TikTok** | **No existe** | Ver abajo |
+
+**Por qué Instagram y TikTok no tienen botón propio.** Ninguna de las dos publica una
+URL de intención de compartir para ligas arbitrarias — no hay un
+`instagram.com/share?url=` equivalente al de Facebook. Las dos son plataformas de
+contenido cerrado: la API de Instagram sirve para publicar *media* en una cuenta de
+empresa conectada (requiere revisión de app y tokens), y el Share Kit de TikTok es un
+SDK para apps nativas que comparte video, no ligas desde un sitio web. **Un botón con el
+logo de Instagram que no comparta a Instagram es peor que no tenerlo**: promete algo que
+no cumple, y el visitante que lo toca se lleva la fricción.
+
+**La forma legítima de llegar a Instagram y TikTok es la hoja nativa del sistema.**
+`navigator.share()` (Web Share API) abre el selector del propio teléfono, que lista
+**todas** las apps instaladas que aceptan una liga — Instagram (historia/DM), TikTok
+(DM), Messenger, Telegram, SMS, AirDrop. Es la única vía real, y encaja perfecto con
+§3 principio 9: esta audiencia vive en el celular. Requiere contexto seguro (HTTPS;
+`localhost` cuenta) y un gesto del usuario.
+
+**Y "copiar liga" cierra el hueco en escritorio.** `navigator.share` no existe en todos
+los navegadores de escritorio, y además **copiar la liga es como la gente de verdad mete
+una URL a Instagram** (pegarla en el sticker de liga de una historia, en la bio, o en un
+DM). No es un premio de consolación: para Instagram es el flujo real.
+
+**Composición final del componente `ShareButtons`:**
+
+1. Facebook · WhatsApp · X · Correo — botones de marca, siempre visibles
+2. **Compartir** (`navigator.share`) — se renderiza **solo si `navigator.share` existe**.
+   Mejora progresiva: si no está, simplemente no aparece, no se muestra un botón muerto
+3. **Copiar liga** — siempre visible, con confirmación visual al copiar
+   (`navigator.clipboard.writeText`)
+
+> **Nota de mantenimiento sobre X.** X ha cambiado su esquema de URLs varias veces.
+> `https://x.com/intent/post` es la forma vigente y `https://twitter.com/intent/tweet`
+> es la heredada; hoy las dos resuelven. **Si algún día el botón de X deja de funcionar,
+> esta es la primera línea que hay que verificar** — no es un bug del código del sitio.
+
+#### Alineación de los íconos — la causa real, medida
+
+Svei reportó que entre Facebook y WhatsApp se veía un hueco, como si faltara un ícono.
+**No falta ninguno.** La causa se midió con `getBBox()` sobre el path de cada glifo:
+
+| Ícono | viewBox | Ancho del glifo | % del viewBox que llena | Desfase del centro |
+|---|---|---|---|---|
+| Facebook | `0 0 24 24` | 9.40 | **39.2%** | −0.93 |
+| WhatsApp | `0 0 32 32` | 25.51 | **79.7%** | −0.24 |
+
+Los dos se renderizan a 20×20, así que el glifo de Facebook se dibuja a **poco más de la
+mitad del tamaño óptico** del de WhatsApp, con un margen vacío alrededor — y ese margen
+es lo que se lee como "hueco". Además está corrido 0.93 unidades a la izquierda.
+
+**Regla para que esto no vuelva a pasar: los íconos de compartir son insignias, no
+glifos sueltos.** Cada uno se dibuja en un `viewBox` de `0 0 24 24`, con un disco de
+`r=12` centrado en `12,12` en el color de marca, y el glifo en blanco encima. Así **todos
+quedan ópticamente idénticos por construcción**, no por ajustar tamaños a mano uno por
+uno. Es el mismo tratamiento que ya tienen Instagram y TikTok en el footer.
+
+El contenedor usa `display: flex`, `align-items: center` y un `gap` único — nunca
+márgenes por ícono.
+
 ### Perfil de Empresa en Google
 
 - Liga prominente en el footer y en la página de contacto.
@@ -876,10 +1035,81 @@ Para esta audiencia va a rendir bastante más que el de Facebook, y es el mismo 
   **exactamente** con los del perfil de Google, carácter por carácter. Este es el detalle
   de SEO local con más impacto y el más fácil de arruinar.
 - El schema de `TravelAgency` debe reflejar los mismos datos.
-- La página de contacto lleva **una imagen estática de mapa que liga a Google Maps**, no
-  un iframe embebido. Un mapa embebido es de lo más pesado que se le puede poner a una
-  página, y desharía todo el presupuesto de performance por una función con la que casi
-  nadie interactúa.
+- La página de contacto lleva un mapa **con fachada de clic** — ver la sección siguiente,
+  que reemplaza la regla original de "imagen estática, nunca un iframe".
+
+### El mapa — decisión revisada (reemplaza la regla anterior)
+
+**Decisión anterior:** "una imagen estática de mapa que liga a Google Maps, **no** un
+iframe embebido", porque un mapa embebido es de lo más pesado que se le puede poner a una
+página y desharía el presupuesto de §9 por una función con la que casi nadie interactúa.
+
+**Ese razonamiento sigue siendo correcto — pero la conclusión era más amplia de lo que el
+argumento sostenía.** La objeción real nunca fue "un iframe de mapa es malo": fue **"un
+iframe de mapa que se carga sin que nadie lo pida es malo"**. Son cosas distintas, y el
+proyecto ya tiene resuelto ese patrón exacto en otro lado: la fachada de YouTube de §9,
+que existe justamente porque un embed crudo descarga más de un megabyte antes de que el
+visitante decida si le interesa.
+
+**Regla nueva: el mapa usa el mismo patrón de fachada que el video.**
+
+- En la carga inicial **no se monta ningún iframe** — cero peticiones a Google, cero
+  cookies de terceros, cero costo en el presupuesto de §9.
+- Se muestra una tarjeta liviana con la dirección en texto y un botón de "Ver el mapa".
+- El iframe real se monta **solo al hacer clic**, con `loading="lazy"` y un `title`
+  descriptivo para lectores de pantalla.
+- **Siempre visible, independiente del iframe:** una liga "Abrir en Google Maps" que sale
+  del sitio. En celular esto abre la app nativa de Maps, que es lo que casi todo el mundo
+  quiere de verdad — llegar al lugar, no mirar un mapa incrustado.
+
+**Por qué esto además es mejor para la privacidad, no solo para el peso.** Un mapa de
+Google embebido pone cookies de Google en cuanto carga. Con la fachada, esa cookie **solo
+existe si el visitante pidió el mapa explícitamente** — el aviso de cookies de §11 no
+necesita cambiar, y el visitante que nunca toca el mapa nunca es rastreado por él.
+
+**Por qué NO se usa la Static Maps API de Google.** Es la opción "imagen estática" de la
+decisión original, y suena ideal, pero exige una llave de API **con facturación activada**
+en Google Cloud, aun dentro del crédito gratuito. Eso choca de frente con §4: el
+presupuesto de infraestructura es **cero pesos** y el cliente no tiene dinero para esto.
+Pedirle una tarjeta de crédito a este cliente —y arriesgar cargos si la llave se filtra,
+porque iría visible en la URL de la imagen— es un costo desproporcionado para un mapa.
+
+**Cómo se obtiene la URL del embed, sin llave y sin facturación.** En Google Maps:
+**Compartir → Insertar un mapa → Copiar HTML**. Eso genera un `<iframe>` cuyo `src`
+apunta a `https://www.google.com/maps/embed?pb=...`. Esa ruta **no requiere llave de API
+ni cuenta de facturación** — es la vía keyless que el propio Google ofrece desde su
+interfaz.
+
+**Cómo se guarda, y por qué así.** El campo de Sanity acepta que el cliente **pegue el
+`<iframe>` completo** (es un solo clic en "Copiar HTML"; pedirle a un cliente no técnico
+que extraiga a mano lo que va entre comillas después de `src=` es pedirle que lea HTML).
+El código **extrae el `src` con una expresión regular y valida que empiece con
+`https://www.google.com/maps/embed`**, y **solo usa esa URL ya validada** — nunca
+renderiza el HTML que pegó el cliente. Esa es la parte que importa: el sitio jamás inserta
+marcado de terceros tal cual, así que un pegado accidental de cualquier otra cosa no puede
+inyectar nada.
+
+**Respaldo automático desde las coordenadas.** Si el cliente no llenó el campo del embed
+pero `siteSettings.address.geo` sí tiene coordenadas (ya son obligatorias para el schema
+de `TravelAgency`), la fachada arma el mapa con
+`https://maps.google.com/maps?q={lat},{lng}&z=15&output=embed`, que también es keyless y
+sí se deja embeber.
+
+> **Advertencia honesta:** esa forma `output=embed` es estable desde hace años pero **no
+> está documentada oficialmente** por Google, a diferencia del `?pb=` de la interfaz de
+> Compartir. Si algún día el mapa de respaldo deja de cargar, la causa es esa y la
+> solución es llenar el campo del embed explícito — que sí es la vía sancionada. Dejarlo
+> anotado aquí evita que alguien persiga el bug en el código del sitio.
+
+**Dónde aplica.** El mismo componente `MapFacade` sirve en dos lugares:
+
+1. **`/contacto`** — la ubicación del negocio, desde `siteSettings`.
+2. **`/tours/[slug]`** — el **punto de encuentro** de cada tour, dentro de `TourFacts`.
+   El campo `meetingPointMapUrl` que ya existe es una liga normal de Maps y **no se puede
+   embeber** (Google la bloquea con `X-Frame-Options`), así que el embed necesita su
+   propio campo opcional. Si ese campo está vacío, la sección se comporta exactamente como
+   hoy: texto del punto de encuentro más la liga de "Ver en Google Maps". No se rompe nada
+   y no obliga al cliente a llenar un campo nuevo en los seis tours.
 
 ### sitemap.xml y robots.txt
 
@@ -945,6 +1175,12 @@ una señal de conversión:
 | `gallery_open` | `tour_name` |
 | `video_play` | `tour_name`, `orientation` |
 | `share_click` | `network`, `tour_name` |
+| `map_open` | `location` (contact / tour), `tour_name` si aplica |
+
+`network` en `share_click` acepta: `facebook` · `whatsapp` · `x` · `email` · `native` ·
+`copy`. **`native` y `copy` son los que importan medir** — son la única vía real hacia
+Instagram y TikTok (§8), así que su volumen es lo que dice si conviene invertir más en
+ese lado. Sin ese dato, la pregunta "¿sirve de algo el compartir?" se contesta a ciegas.
 
 ### La convención de UTM — sin esto, todo el ejercicio falla
 
@@ -1125,6 +1361,26 @@ Cada fase debe quedar funcionando y verificada antes de pasar a la siguiente.
 | H | Analítica | GA4 + los cinco eventos personalizados |
 | I | Páginas legales | Aviso de privacidad, términos, franja de cookies |
 | J | Pasada de performance | Lighthouse en móvil; cumplir el presupuesto de §9 |
+| K | `visible` → `hidden` | Publicar significa publicado, sin segundo paso. Ver §5 |
+| L | Compartir, imagen de Nosotros, mapas | Ver abajo |
+
+### Fase L — alcance exacto
+
+Tres cosas independientes; se pueden hacer en cualquier orden y verificar por separado.
+
+1. **`ShareButtons` completo** (§8) — agregar X, correo, compartir nativo y copiar liga;
+   rehacer los cinco íconos como insignias de 24×24 para que queden ópticamente parejos;
+   ampliar el `network` de `share_click` (§10).
+2. **`aboutPage.image`** (§5) — campo nuevo opcional con validación de 1600px, más el
+   layout 7/5 de §6. Sin imagen cargada, la página no cambia.
+3. **`MapFacade`** (§8, §6) — componente nuevo, más `siteSettings.mapEmbed` y
+   `tour.meetingPointMapEmbed`. Sin campos llenos, ni la página de contacto ni la de tour
+   cambian respecto a hoy.
+
+**Los tres comparten la misma propiedad y hay que respetarla: son aditivos.** Ninguno
+puede romper una página cuando el campo nuevo está vacío, porque el día que se
+construyan **van a estar vacíos** — el cliente todavía no los llena. Verificar el estado
+vacío primero, no al final.
 
 **Empezar por A y no avanzar hasta que la perilla de re-tematización funcione.** Es el
 requisito que convierte esto en plantilla reutilizable, y si se deja para el final se
