@@ -1,3 +1,4 @@
+import { MapFacade } from '@/components/ui/map-facade';
 import { localeValue, type Locale, type LocaleString, type TourDetail } from '@/lib/sanity/types';
 
 import styles from './tour-facts.module.css';
@@ -11,7 +12,6 @@ const LABELS: Record<
     meetingPoint: string;
     departureTimes: string;
     minAge: string;
-    mapLink: string;
   }
 > = {
   es: {
@@ -21,7 +21,6 @@ const LABELS: Record<
     meetingPoint: 'Punto de encuentro',
     departureTimes: 'Horarios de salida',
     minAge: 'Edad mínima',
-    mapLink: 'Ver en Google Maps',
   },
   en: {
     includes: "What's included",
@@ -30,7 +29,6 @@ const LABELS: Record<
     meetingPoint: 'Meeting point',
     departureTimes: 'Departure times',
     minAge: 'Minimum age',
-    mapLink: 'View on Google Maps',
   },
 };
 
@@ -63,11 +61,14 @@ export function TourFacts({ tour, locale }: { tour: TourDetail; locale: Locale }
           <>
             <h3 className={styles.factTitle}>{labels.meetingPoint}</h3>
             <p>{localeValue(tour.meetingPoint, locale)}</p>
-            {tour.meetingPointMapUrl && (
-              <a href={tour.meetingPointMapUrl} target="_blank" rel="noopener noreferrer" className={styles.mapLink}>
-                {labels.mapLink}
-              </a>
-            )}
+            <MapFacade
+              embedHtml={tour.meetingPointMapEmbed}
+              externalUrl={tour.meetingPointMapUrl}
+              label={localeValue(tour.meetingPoint, locale)}
+              locale={locale}
+              location="tour"
+              tourName={localeValue(tour.title, locale)}
+            />
           </>
         )}
         {tour.departureTimes && (

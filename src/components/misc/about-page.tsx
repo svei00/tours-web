@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 
+import { AsymmetricRow } from '@/components/ui/asymmetric-row';
 import { Container } from '@/components/ui/container';
 import { Prose } from '@/components/ui/prose';
+import { RichImage } from '@/components/ui/rich-image';
 import { Section } from '@/components/ui/section';
 import { buildAlternates, LOCALIZED_PATHS } from '@/lib/seo/metadata';
 import { getAboutPage } from '@/lib/sanity/pages';
@@ -50,20 +52,50 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   const bodyBlocks = typedLocale === 'en' && doc?.body?.en ? doc.body.en : doc?.body?.es;
 
+  const textColumn = (
+    <>
+      <header className={styles.header}>
+        <h1 className={styles.title}>{TITLE[typedLocale]}</h1>
+        <p className={styles.lead}>{lead}</p>
+      </header>
+      <div className={styles.body}>
+        {bodyBlocks && bodyBlocks.length > 0 ? (
+          <Prose value={bodyBlocks} />
+        ) : (
+          FALLBACK_BODY[typedLocale].map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+        )}
+      </div>
+    </>
+  );
+
+  /**
+   * Sin foto (el estado real hasta que el cliente suba una): una sola
+   * columna, exactamente como antes de este campo existir. Con foto: 7/5
+   * como el resto del sitio (HANDOFF §6) -- nunca 50/50, esa es justo la
+   * señal de "generado" que §3 pide evitar.
+   */
+  if (!doc?.image?.asset) {
+    return (
+      <Section>
+        <Container>
+          <div className={styles.singleColumn}>{textColumn}</div>
+        </Container>
+      </Section>
+    );
+  }
+
   return (
     <Section>
       <Container>
-        <header className={styles.header}>
-          <h1 className={styles.title}>{TITLE[typedLocale]}</h1>
-          <p className={styles.lead}>{lead}</p>
-        </header>
-        <div className={styles.body}>
-          {bodyBlocks && bodyBlocks.length > 0 ? (
-            <Prose value={bodyBlocks} />
-          ) : (
-            FALLBACK_BODY[typedLocale].map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-          )}
-        </div>
+        <AsymmetricRow
+          variant="featureLeft"
+          wide={textColumn}
+          narrow={
+            <div className={styles.imageWrapper}>
+              <RichImage image={doc.image} locale={typedLocale} sizes="(max-width: 1024px) 100vw, 42vw" />
+            </div>
+          }
+        />
       </Container>
     </Section>
   );

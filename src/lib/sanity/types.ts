@@ -71,6 +71,7 @@ export type TourDetail = TourListItem & {
   departureTimes?: string;
   meetingPoint?: LocaleString;
   meetingPointMapUrl?: string;
+  meetingPointMapEmbed?: string | null;
   includes: LocaleString[];
   excludes: LocaleString[];
   whatToBring: LocaleString[];
@@ -94,6 +95,7 @@ export type LegalPageDoc = {
 export type AboutPageDoc = {
   lead: LocaleText | null;
   body: LocaleBlockValue | null;
+  image: RichImageValue | null;
 };
 
 export type ContactPageDoc = {

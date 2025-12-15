@@ -146,6 +146,13 @@ export const tour = defineType({
       type: 'url',
     }),
     defineField({
+      name: 'meetingPointMapEmbed',
+      title: 'Mapa del punto de encuentro (opcional)',
+      description:
+        'Para ver el mapa sin salir del sitio. En Google Maps: Compartir → Insertar un mapa → Copiar HTML, y pega aquí todo lo que copiaste. Sin esto, el punto de encuentro se sigue mostrando en texto con la liga de arriba, igual que hoy.',
+      type: 'text',
+    }),
+    defineField({
       name: 'includes',
       title: 'Qué incluye',
       type: 'array',

@@ -1,4 +1,4 @@
-import { AsymmetricRow } from '@/components/home/asymmetric-row';
+import { AsymmetricRow } from '@/components/ui/asymmetric-row';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { TourCard } from '@/components/tour/tour-card';

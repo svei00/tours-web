@@ -61,6 +61,7 @@ export const TOUR_DETAIL_QUERY = groq`*[_type == "tour" && hidden != true && (sl
   departureTimes,
   meetingPoint,
   meetingPointMapUrl,
+  meetingPointMapEmbed,
   includes,
   excludes,
   whatToBring,

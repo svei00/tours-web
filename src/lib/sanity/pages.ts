@@ -7,7 +7,7 @@ import type { AboutPageDoc, ContactPageDoc } from './types';
 
 /** `null` si Svei todavía no crea el documento en el Studio -- mismo criterio que `getSiteSettings`, no truena. */
 export const getAboutPage = cache(async (): Promise<AboutPageDoc | null> => {
-  return sanityClient.fetch<AboutPageDoc | null>(groq`*[_type == "aboutPage"][0]{ lead, body }`);
+  return sanityClient.fetch<AboutPageDoc | null>(groq`*[_type == "aboutPage"][0]{ lead, body, image }`);
 });
 
 export const getContactPage = cache(async (): Promise<ContactPageDoc | null> => {

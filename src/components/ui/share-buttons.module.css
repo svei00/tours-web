@@ -1,31 +1,38 @@
 .wrap {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .heading {
   font-size: var(--font-size-small);
   font-weight: 600;
   color: var(--color-muted);
+  margin-right: var(--space-1);
 }
 
+/*
+ * Sin fondo propio: cada ícono de share-icons.tsx ya trae su propio
+ * círculo de color de marca de fondo (HANDOFF §8) -- envolverlo en OTRO
+ * círculo aquí encima sería un círculo dentro de un círculo. El botón
+ * solo centra el ícono y da el área de toque.
+ */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
   border-radius: var(--radius-pill);
-  color: var(--color-ink);
-  background-color: var(--color-sand);
-  transition:
-    background-color var(--motion-fast) var(--motion-easing),
-    transform var(--motion-fast) var(--motion-easing);
+  transition: transform var(--motion-fast) var(--motion-easing);
 }
 
 .button:hover {
-  background-color: var(--color-primary-100);
   transform: scale(1.08);
 }
 

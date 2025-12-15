@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/ui/container';
+import { MapFacade } from '@/components/ui/map-facade';
 import { Section } from '@/components/ui/section';
 import { WhatsAppButton } from '@/components/ui/whatsapp-button';
 import { buildAlternates, LOCALIZED_PATHS } from '@/lib/seo/metadata';
@@ -114,6 +115,14 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
                 <span className={styles.cardValue}>{address}</span>
               </div>
             )}
+
+            <MapFacade
+              embedHtml={siteSettings?.mapEmbed}
+              geo={siteSettings?.address?.geo ?? null}
+              label={address ?? TITLE[typedLocale]}
+              locale={typedLocale}
+              location="contact"
+            />
 
             {siteSettings?.openingHours && (
               <div className={styles.cardRow}>

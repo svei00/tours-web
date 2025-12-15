@@ -33,8 +33,15 @@ export function trackVideoPlay(tourName: string, orientation: string): void {
   track('video_play', { tour_name: tourName, orientation });
 }
 
-type ShareNetwork = 'facebook' | 'whatsapp';
+type ShareNetwork = 'facebook' | 'whatsapp' | 'x' | 'email' | 'native' | 'copy';
 
 export function trackShareClick(network: ShareNetwork, tourName: string): void {
   track('share_click', { network, tour_name: tourName });
+}
+
+type MapOpenLocation = 'contact' | 'tour';
+
+/** HANDOFF §10: sin esto no hay forma de saber si el mapa con fachada de clic (§8) se usa o no. */
+export function trackMapOpen(location: MapOpenLocation, tourName?: string): void {
+  track('map_open', { location, ...(tourName && { tour_name: tourName }) });
 }
