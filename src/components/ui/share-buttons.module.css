@@ -1,8 +1,21 @@
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .wrap {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+/* El mensaje de "pégalo en Instagram/TikTok" -- HANDOFF §8. `aria-live` en el JSX ya lo anuncia a lectores de pantalla; el estilo solo lo hace legible sin robarle protagonismo a los botones. */
+.hint {
+  font-size: var(--font-size-small);
+  color: var(--color-muted);
+  max-width: 360px;
 }
 
 .heading {

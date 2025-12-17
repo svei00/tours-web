@@ -117,7 +117,6 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             )}
 
             <MapFacade
-              embedHtml={siteSettings?.mapEmbed}
               geo={siteSettings?.address?.geo ?? null}
               label={address ?? TITLE[typedLocale]}
               locale={typedLocale}

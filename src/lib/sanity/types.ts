@@ -71,7 +71,7 @@ export type TourDetail = TourListItem & {
   departureTimes?: string;
   meetingPoint?: LocaleString;
   meetingPointMapUrl?: string;
-  meetingPointMapEmbed?: string | null;
+  meetingPointGeo?: { lat: number; lng: number } | null;
   includes: LocaleString[];
   excludes: LocaleString[];
   whatToBring: LocaleString[];

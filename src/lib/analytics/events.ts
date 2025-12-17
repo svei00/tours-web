@@ -33,7 +33,7 @@ export function trackVideoPlay(tourName: string, orientation: string): void {
   track('video_play', { tour_name: tourName, orientation });
 }
 
-type ShareNetwork = 'facebook' | 'whatsapp' | 'x' | 'email' | 'native' | 'copy';
+type ShareNetwork = 'facebook' | 'whatsapp' | 'x' | 'email' | 'native' | 'copy' | 'instagram' | 'tiktok';
 
 export function trackShareClick(network: ShareNetwork, tourName: string): void {
   track('share_click', { network, tour_name: tourName });

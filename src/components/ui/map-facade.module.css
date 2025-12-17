@@ -38,7 +38,7 @@
   color: var(--color-primary-600);
 }
 
-.iframeWrap {
+.mapContainer {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -46,12 +46,10 @@
   overflow: hidden;
 }
 
-.iframe {
-  position: absolute;
-  inset: 0;
+.mapLoading {
   width: 100%;
   height: 100%;
-  border: none;
+  background-color: var(--color-sand);
 }
 
 .externalLink {

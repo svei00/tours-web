@@ -338,8 +338,8 @@ de un megabyte antes de que el visitante decida siquiera ver algo.
 | `durationHours` | number | |
 | `departureTimes` | string | |
 | `meetingPoint` | localeString | |
-| `meetingPointMapUrl` | url | Liga a Google Maps — abre Maps, **no** se puede embeber |
-| `meetingPointMapEmbed` | text | Opcional. El `<iframe>` de "Insertar un mapa" para ver el punto de encuentro sin salir del sitio. Ver §8, "El mapa" |
+| `meetingPointMapUrl` | url | Liga a "Abrir en Google Maps" — direcciones paso a paso |
+| `meetingPointGeo` | geopoint | Opcional. Coordenadas para el mapa de Leaflet sin salir del sitio. Ver §8, "El mapa" |
 | `includes` | localeString[] | Qué incluye |
 | `excludes` | localeString[] | Qué no incluye |
 | `whatToBring` | localeString[] | Qué llevar |
@@ -418,10 +418,9 @@ categoría), `hidden`.
 - `heroSlides` (richImage[], máximo 5)
 - `reviewsSectionVisible` (boolean) — interruptor de la sección completa
 - `defaultSeo`
-- **Mapa:** `mapEmbed` (text) — ver §8, "El mapa". El cliente pega el `<iframe>` completo
-  que le da Google Maps en **Compartir → Insertar un mapa → Copiar HTML**. El código
-  extrae el `src` y valida el prefijo `https://www.google.com/maps/embed`; nunca renderiza
-  el HTML pegado. Opcional: si está vacío, la fachada cae a `address.geo`.
+- **Sin campo de mapa propio** — el mapa de `/contacto` (§8, "El mapa") se arma solo desde
+  `address.geo`, el mismo `geopoint` que ya existe para el schema de `TravelAgency`. No
+  hay nada nuevo que el cliente tenga que llenar.
 
 ### Singletons de página — contenido editable de las páginas sueltas
 
@@ -1074,42 +1073,58 @@ presupuesto de infraestructura es **cero pesos** y el cliente no tiene dinero pa
 Pedirle una tarjeta de crédito a este cliente —y arriesgar cargos si la llave se filtra,
 porque iría visible en la URL de la imagen— es un costo desproporcionado para un mapa.
 
-**Cómo se obtiene la URL del embed, sin llave y sin facturación.** En Google Maps:
-**Compartir → Insertar un mapa → Copiar HTML**. Eso genera un `<iframe>` cuyo `src`
-apunta a `https://www.google.com/maps/embed?pb=...`. Esa ruta **no requiere llave de API
-ni cuenta de facturación** — es la vía keyless que el propio Google ofrece desde su
-interfaz.
+#### Segunda revisión: Leaflet + OpenStreetMap, no el `<iframe>` de Google
 
-**Cómo se guarda, y por qué así.** El campo de Sanity acepta que el cliente **pegue el
-`<iframe>` completo** (es un solo clic en "Copiar HTML"; pedirle a un cliente no técnico
-que extraiga a mano lo que va entre comillas después de `src=` es pedirle que lea HTML).
-El código **extrae el `src` con una expresión regular y valida que empiece con
-`https://www.google.com/maps/embed`**, y **solo usa esa URL ya validada** — nunca
-renderiza el HTML que pegó el cliente. Esa es la parte que importa: el sitio jamás inserta
-marcado de terceros tal cual, así que un pegado accidental de cualquier otra cosa no puede
-inyectar nada.
+El primer intento de esta sección (todavía visible en el historial de git) resolvía el
+mapa pegando el `<iframe>` de "Insertar un mapa" de Google — keyless, sin facturación,
+correcto dentro de sus propios términos. Svei encontró un ejemplo mejor
+(`portfolio.excelsolutionsv.com/contact`, un sitio propio) que usa
+**[Leaflet](https://leafletjs.com/)** (librería de mapas de código abierto) con tiles de
+**[OpenStreetMap](https://www.openstreetmap.org/)** — confirmado inspeccionando esa página:
+sin llave, sin cuenta, sin facturación, de verdad gratis. Se adoptó ese enfoque en su
+lugar porque es estrictamente mejor en los mismos tres ejes que ya importaban:
 
-**Respaldo automático desde las coordenadas.** Si el cliente no llenó el campo del embed
-pero `siteSettings.address.geo` sí tiene coordenadas (ya son obligatorias para el schema
-de `TravelAgency`), la fachada arma el mapa con
-`https://maps.google.com/maps?q={lat},{lng}&z=15&output=embed`, que también es keyless y
-sí se deja embeber.
+- **Más simple para el cliente.** Ya no hay que pegar HTML de Google — la ubicación es
+  el mismo `geopoint` (`address.geo`) que el schema de `TravelAgency` ya exige. El cliente
+  solo toca un mapa en el Studio para ubicar el punto; nunca ve una línea de código.
+- **Más honesto con "presupuesto cero pesos".** El mapa `output=embed` de la primera
+  versión era keyless pero **no documentado oficialmente** por Google — dependía de una
+  ruta que podía desaparecer sin aviso. OpenStreetMap es gratis por diseño, no por un
+  atajo sin garantías.
+- **Cero dependencia de Google en absoluto**, no solo cero llave — nada que embeber desde
+  su dominio, nada de sus cookies aunque el visitante nunca abra el mapa.
 
-> **Advertencia honesta:** esa forma `output=embed` es estable desde hace años pero **no
-> está documentada oficialmente** por Google, a diferencia del `?pb=` de la interfaz de
-> Compartir. Si algún día el mapa de respaldo deja de cargar, la causa es esa y la
-> solución es llenar el campo del embed explícito — que sí es la vía sancionada. Dejarlo
-> anotado aquí evita que alguien persiga el bug en el código del sitio.
+**Sigue siendo una fachada de clic**, mismo principio que antes — lo que cambia es qué se
+carga al hacer clic:
+
+- En la carga inicial **no se monta ni el JS ni el CSS de Leaflet**. `MapFacade` usa
+  `next/dynamic({ ssr: false })` sobre un componente separado (`leaflet-map.tsx`) que
+  **solo se renderiza después del clic** — así Next separa esa librería (~40KB
+  comprimidos) en su propio chunk que ni siquiera se pide hasta ese momento. Mismo
+  resultado que la fachada de YouTube, ahora también para el peso real de una librería de
+  mapas, no solo el de un iframe.
+- El pin es un `L.divIcon` dibujado en CSS (círculo del color primario, recortado a forma
+  de gota con `border-radius` + `rotate`), **no** el marcador de imagen por default de
+  Leaflet — ese default tiene un bug clásico y muy conocido con empaquetadores
+  (Webpack/Turbopack resuelven mal la ruta de sus PNG y el marcador sale roto). Evitarlo
+  de raíz es más simple que perseguirlo.
+- **La atribución de OpenStreetMap se mantiene siempre visible** — no es cosmética, es la
+  condición de uso del servidor de tiles gratuito. Leaflet la muestra por default; el
+  código no la quita.
+- **Siempre visible, independiente de si se abrió el mapa:** una liga "Abrir en Google
+  Maps" (sí, Google aquí — es para direcciones paso a paso, que Leaflet no da, y es lo que
+  la gente de verdad quiere en el celular). Se arma desde las mismas coordenadas.
 
 **Dónde aplica.** El mismo componente `MapFacade` sirve en dos lugares:
 
-1. **`/contacto`** — la ubicación del negocio, desde `siteSettings`.
-2. **`/tours/[slug]`** — el **punto de encuentro** de cada tour, dentro de `TourFacts`.
-   El campo `meetingPointMapUrl` que ya existe es una liga normal de Maps y **no se puede
-   embeber** (Google la bloquea con `X-Frame-Options`), así que el embed necesita su
-   propio campo opcional. Si ese campo está vacío, la sección se comporta exactamente como
-   hoy: texto del punto de encuentro más la liga de "Ver en Google Maps". No se rompe nada
-   y no obliga al cliente a llenar un campo nuevo en los seis tours.
+1. **`/contacto`** — la ubicación del negocio, desde `siteSettings.address.geo`.
+2. **`/tours/[slug]`** — el **punto de encuentro** de cada tour, dentro de `TourFacts`,
+   desde el campo opcional `tour.meetingPointGeo` (geopoint, con su propio selector visual
+   en el Studio). El campo `meetingPointMapUrl` que ya existía sigue ahí tal cual — es la
+   liga de "Abrir en Google Maps" de ese tour. Si `meetingPointGeo` está vacío, la sección
+   se comporta exactamente como antes de que este campo existiera: texto del punto de
+   encuentro más la liga externa. No obliga al cliente a llenar nada nuevo en los seis
+   tours ya cargados.
 
 ### sitemap.xml y robots.txt
 
@@ -1362,24 +1377,33 @@ Cada fase debe quedar funcionando y verificada antes de pasar a la siguiente.
 | I | Páginas legales | Aviso de privacidad, términos, franja de cookies |
 | J | Pasada de performance | Lighthouse en móvil; cumplir el presupuesto de §9 |
 | K | `visible` → `hidden` | Publicar significa publicado, sin segundo paso. Ver §5 |
-| L | Compartir, imagen de Nosotros, mapas | Ver abajo |
+| L | Compartir, imagen de Nosotros, mapas | **Hecha.** Ver abajo |
 
-### Fase L — alcance exacto
+### Fase L — hecha, alcance final
 
-Tres cosas independientes; se pueden hacer en cualquier orden y verificar por separado.
+El alcance creció una vez construida la primera versión, con feedback real de Svei
+después de verla en uso. Documentado tal como quedó, no como se planeó al inicio.
 
-1. **`ShareButtons` completo** (§8) — agregar X, correo, compartir nativo y copiar liga;
-   rehacer los cinco íconos como insignias de 24×24 para que queden ópticamente parejos;
-   ampliar el `network` de `share_click` (§10).
+1. **`ShareButtons` completo** (§8) — Facebook, WhatsApp, X, correo, Instagram, TikTok,
+   compartir nativo (cuando el navegador lo soporta) y copiar liga. Los íconos de marca
+   son insignias de 24×24 (círculo de color + glifo blanco) para quedar ópticamente
+   parejos — incluye un ajuste posterior al de WhatsApp, cuyo glifo por poco llenaba el
+   círculo entero y se veía desproporcionado contra el resto de la fila. Instagram/TikTok
+   copian la liga y muestran un mensaje de dónde pegarla, en vez de fingir un botón de
+   compartir que esas dos plataformas no ofrecen. `network` de `share_click` (§10)
+   ampliado a las ocho opciones.
 2. **`aboutPage.image`** (§5) — campo nuevo opcional con validación de 1600px, más el
    layout 7/5 de §6. Sin imagen cargada, la página no cambia.
-3. **`MapFacade`** (§8, §6) — componente nuevo, más `siteSettings.mapEmbed` y
-   `tour.meetingPointMapEmbed`. Sin campos llenos, ni la página de contacto ni la de tour
-   cambian respecto a hoy.
+3. **`MapFacade`** con Leaflet + OpenStreetMap (§8, §6) — pasó por una segunda revisión
+   después de la primera versión (que pegaba el `<iframe>` de Google Maps): mismo
+   principio de fachada de clic, pero sin ninguna dependencia de Google hasta que el
+   visitante toca "Abrir en Google Maps". Usa `siteSettings.address.geo` y el nuevo campo
+   opcional `tour.meetingPointGeo`. Sin campos llenos, ni la página de contacto ni la de
+   tour cambian respecto a antes de este campo existir.
 
 **Los tres comparten la misma propiedad y hay que respetarla: son aditivos.** Ninguno
 puede romper una página cuando el campo nuevo está vacío, porque el día que se
-construyan **van a estar vacíos** — el cliente todavía no los llena. Verificar el estado
+construyeron **estaban vacíos** — el cliente todavía no los llena. Verificar el estado
 vacío primero, no al final.
 
 **Empezar por A y no avanzar hasta que la perilla de re-tematización funcione.** Es el

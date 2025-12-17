@@ -25,7 +25,6 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   youtubeUrl,
   address,
   openingHours,
-  mapEmbed,
   heroHeadline,
   heroSubheadline,
   heroSlides,
@@ -64,7 +63,6 @@ export type SiteSettings = {
   youtubeUrl: string | null;
   address: SiteAddress | null;
   openingHours: string | null;
-  mapEmbed: string | null;
   heroHeadline: LocaleString | null;
   heroSubheadline: LocaleString | null;
   heroSlides: RichImageValue[] | null;

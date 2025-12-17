@@ -62,7 +62,7 @@ export function TourFacts({ tour, locale }: { tour: TourDetail; locale: Locale }
             <h3 className={styles.factTitle}>{labels.meetingPoint}</h3>
             <p>{localeValue(tour.meetingPoint, locale)}</p>
             <MapFacade
-              embedHtml={tour.meetingPointMapEmbed}
+              geo={tour.meetingPointGeo}
               externalUrl={tour.meetingPointMapUrl}
               label={localeValue(tour.meetingPoint, locale)}
               locale={locale}

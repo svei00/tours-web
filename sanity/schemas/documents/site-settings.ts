@@ -77,13 +77,6 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'mapEmbed',
-      title: 'Mapa de ubicación',
-      description:
-        'Ve a Google Maps → busca tu dirección → Compartir → Insertar un mapa → Copiar HTML, y pega aquí todo lo que copiaste. No hace falta editarlo. Si lo dejas vacío, el sitio arma un mapa a partir de las coordenadas de abajo.',
-      type: 'text',
-    }),
-    defineField({
       name: 'foundedYear',
       title: 'Año en que empezó a operar',
       description: 'Para el "años operando" del trust strip del home — se resta contra el año actual.',
