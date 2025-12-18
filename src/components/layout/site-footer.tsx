@@ -31,6 +31,14 @@ const GBP_LABEL: Record<Locale, string> = {
   en: 'Google Profile',
 };
 
+const CREDIT_LABEL: Record<Locale, string> = {
+  es: 'Sitio creado por',
+  en: 'Site by',
+};
+
+const DEVELOPER_NAME = 'Ivan Villanueva';
+const DEVELOPER_PORTFOLIO_URL = 'https://portfolio.excelsolutionsv.com';
+
 export async function SiteFooter({ locale }: { locale: Locale }) {
   const siteSettings = await getSiteSettings();
   const year = new Date().getFullYear();
@@ -107,6 +115,12 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
 
         <p className={styles.copyright}>
           © {year} {brand.businessName}
+        </p>
+        <p className={styles.credit}>
+          {CREDIT_LABEL[locale]}{' '}
+          <a href={DEVELOPER_PORTFOLIO_URL} target="_blank" rel="noopener noreferrer">
+            {DEVELOPER_NAME}
+          </a>
         </p>
       </Container>
     </footer>
