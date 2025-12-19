@@ -36,7 +36,7 @@ const CREDIT_LABEL: Record<Locale, string> = {
   en: 'Site by',
 };
 
-const DEVELOPER_NAME = 'Ivan Villanueva';
+const DEVELOPER_NAME = 'Ivan E. Villanueva';
 const DEVELOPER_PORTFOLIO_URL = 'https://portfolio.excelsolutionsv.com';
 
 export async function SiteFooter({ locale }: { locale: Locale }) {
@@ -117,9 +117,9 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
           © {year} {brand.businessName}
         </p>
         <p className={styles.credit}>
-          {CREDIT_LABEL[locale]}{' '}
-          <a href={DEVELOPER_PORTFOLIO_URL} target="_blank" rel="noopener noreferrer">
-            {DEVELOPER_NAME}
+          <span className={styles.creditLabel}>{CREDIT_LABEL[locale]}</span>{' '}
+          <a href={DEVELOPER_PORTFOLIO_URL} target="_blank" rel="noopener noreferrer" className={styles.creditLink}>
+            <span className={styles.creditName}>{DEVELOPER_NAME}</span>
           </a>
         </p>
       </Container>

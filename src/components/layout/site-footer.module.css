@@ -77,28 +77,72 @@
   opacity: 0.7;
 }
 
-/* Mismo tratamiento discreto que .copyright -- crédito del desarrollador, no un anuncio. El link reusa el mismo hover que el resto del footer (primary-300 + negrita) para que se sienta parte del mismo sistema, no un color de marca ajeno pegado encima. */
+/*
+ * Crédito del desarrollador. La etiqueta ("Sitio creado por") se queda
+ * discreta como .copyright; el nombre en sí es una excepción deliberada
+ * al resto del footer (que reusa los tokens de marca del cliente) -- ver
+ * .creditName. `opacity` NO va en este contenedor a propósito: opacity
+ * afecta a todo el subárbol, y hubiera apagado el degradado del nombre
+ * junto con la etiqueta. Por eso el atenuado va en `.creditLabel` como
+ * color, no como opacity del padre.
+ */
 .credit {
   margin-top: var(--space-2);
   font-size: var(--font-size-caption);
+}
+
+.creditLabel {
+  color: var(--color-white);
   opacity: 0.7;
 }
 
-.credit a {
-  color: var(--color-white);
+.creditLink {
   text-decoration: none;
-  transition: color var(--motion-fast) var(--motion-easing);
+  display: inline-block;
 }
 
-.credit a:hover {
-  color: var(--color-primary-300);
-  font-weight: 600;
+/*
+ * Insignia con degradado -- reproduce, con los valores exactos, el
+ * tratamiento que Svei ya usa para su propio nombre en el pie de
+ * excelsolutionsv.com (verificado ahí: `bg-gradient-to-r from-secondaryText
+ * to-primaryText`, `#177D47` -> `#1D6FD1`). Colores fijos a propósito, NO
+ * tokens de `brand.ts`: son la identidad personal de Svei, no la del
+ * cliente -- si `primaryColor` cambia para un cliente futuro de la
+ * plantilla, esta insignia no debe cambiar con él.
+ *
+ * El verde-a-azul además calza bien con el teal del sitio sin pedirlo
+ * expresamente: el teal vive justo entre verde y azul en el círculo de
+ * tono (~184°, entre los ~148° del verde y ~213° del azul de Svei), así
+ * que el degradado se lee como de la misma familia, no como un color
+ * ajeno pegado encima.
+ *
+ * Tipografía con pila tipo Tahoma/Verdana -- pedido explícito de Svei:
+ * esas fuentes dibujan la "I" mayúscula con remates (flags) que la
+ * distinguen de la "l" minúscula y del "1", algo que Figtree (el cuerpo
+ * del sitio) no garantiza. Es la única excepción de fuente del sitio, y
+ * a propósito acotada a este nombre nada más -- no se auto-hospeda (son
+ * fuentes de sistema con licencia propia), solo se referencia como pila
+ * de respaldo del sistema operativo.
+ */
+.creditName {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-family: Tahoma, Verdana, Geneva, sans-serif;
+  font-weight: 700;
+  color: var(--color-white);
+  background: linear-gradient(to right, #177d47, #1d6fd1);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .credit a {
-    transition: none;
-  }
+/*
+ * Mismo truco que su sitio: el degradado se invierte en hover, no solo se
+ * apaga. Un gradiente no se puede interpolar entre dos direcciones con
+ * `transition` (los navegadores no animan `background-image`) -- su
+ * propio sitio tampoco lo anima, solo cambia de golpe, así que esto es
+ * fiel al original, no una limitación nueva.
+ */
+.creditLink:hover .creditName {
+  background: linear-gradient(to right, #1d6fd1, #177d47);
 }
 
 @media (min-width: 768px) {
